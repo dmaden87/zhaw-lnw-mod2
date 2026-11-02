@@ -1,18 +1,16 @@
 'use client';
 import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { IconSearch, IconArrowRight } from '@tabler/icons-react';
 
 const LEVELS = [
-  { key: 'instant', label: 'Instant', hint: '5–10 Sek. lesen' },
+  { key: 'instant', label: 'Instant', hint: '5–10 Sek.' },
   { key: 'basic', label: 'Basic', hint: '≤ 3 Min.' },
   { key: 'full', label: 'Full', hint: '≤ 15 Min.' },
 ];
-const LIGHT = {
-  green: { label: 'Sicher', bg: '#e7f6ec', fg: '#17663a', dot: '#22a05a' },
-  yellow: { label: 'Ziemlich sicher', bg: '#fff4e0', fg: '#8a4b06', dot: '#e8a317' },
-  red: { label: 'Unsicher', bg: '#fdecec', fg: '#9b1c1c', dot: '#dc3b3b' },
-};
+const LIGHT = { green: 'Sicher', yellow: 'Ziemlich sicher', red: 'Unsicher' };
 const EXAMPLES = [
+  'Was ist der camt-Standard?',
   'Was passiert bei einem Timeout im Instant Payment?',
   'Welche Datenfelder schickt PayHub an ScreenGuard?',
   'Was wurde zur LSV-Migration entschieden?',
@@ -28,14 +26,15 @@ export default function Chat() {
 
   async function ask(q, lvl = level) {
     const text = (q ?? question).trim();
-    if (!text) { setError('Bitte zuerst eine Frage eingeben.'); inputRef.current?.focus(); return; }
+    if (!text) { setError('Gib zuerst eine Frage ein.'); inputRef.current?.focus(); return; }
+    if (busy) return;
     setError(''); setBusy(true);
     const t0 = Date.now();
     try {
       const res = await fetch('/api/ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: text, level: lvl }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Fehler');
-      setItems((prev) => [{ ...data, seconds: ((Date.now() - t0) / 1000).toFixed(1) }, ...prev]);
+      if (!res.ok) throw new Error(data.error || 'Die Antwort konnte nicht erzeugt werden.');
+      setItems((prev) => [{ ...data, seconds: ((Date.now() - t0) / 1000).toFixed(1).replace('.', ',') }, ...prev]);
       setQuestion('');
     } catch (e) {
       setError(e.message);
@@ -46,84 +45,81 @@ export default function Chat() {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10 }} role="radiogroup" aria-label="Detailstufe">
+      <form className="search" onSubmit={(e) => { e.preventDefault(); ask(); }}>
+        <IconSearch size={18} stroke={1.8} color="#6b7a8f" style={{ marginTop: 9, flex: 'none' }} aria-hidden="true" />
+        <textarea ref={inputRef} rows={1} value={question} aria-label="Frage" placeholder="Was ist der camt-Standard?"
+          onChange={(e) => { setQuestion(e.target.value); if (error) setError(''); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); } }} />
+        <button type="submit" className="btn-primary" aria-busy={busy}>{busy ? 'Suche …' : 'Briefing holen'}</button>
+      </form>
+      {error && <p className="err" role="alert">{error}</p>}
+
+      <div className="pills" role="radiogroup" aria-label="Detailstufe">
         {LEVELS.map((l) => (
-          <button key={l.key} type="button" role="radio" aria-checked={level === l.key} onClick={() => setLevel(l.key)}
-            style={{ flex: 1, padding: '8px 6px', borderRadius: 8, cursor: 'pointer', border: level === l.key ? '2px solid #2f5bea' : '1px solid #cfd5df',
-              background: level === l.key ? '#e8eefe' : '#fff', color: '#1d2433', fontSize: 14 }}>
-            <strong>{l.label}</strong><br /><span style={{ fontSize: 12, color: '#6b7385' }}>{l.hint}</span>
+          <button key={l.key} type="button" role="radio" aria-checked={level === l.key} className="pill" onClick={() => setLevel(l.key)}>
+            {l.label} <small>{l.hint}</small>
           </button>
         ))}
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); ask(); }}>
-        <textarea ref={inputRef} value={question} rows={2} placeholder="Frage zu Prozess, Schnittstelle oder Fachthema …"
-          onChange={(e) => { setQuestion(e.target.value); if (error) setError(''); }}
-          onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); } }}
-          style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', fontSize: 16, border: '1px solid #cfd5df', borderRadius: 8, resize: 'vertical', fontFamily: 'inherit' }} />
-        {error && <p style={{ color: '#b42318', fontSize: 14, margin: '6px 0 0' }}>{error}</p>}
-        <button type="submit" disabled={busy}
-          style={{ marginTop: 8, width: '100%', padding: '10px', fontSize: 16, background: busy ? '#8da2e8' : '#2f5bea', color: '#fff', border: 0, borderRadius: 8, cursor: busy ? 'wait' : 'pointer' }}>
-          {busy ? 'Suche in der Wissensbasis …' : 'Briefing holen'}
-        </button>
-      </form>
-
       {items.length === 0 && (
-        <div style={{ marginTop: 20 }}>
-          <p style={{ fontSize: 13, color: '#6b7385', margin: '0 0 6px' }}>Beispiele:</p>
-          {EXAMPLES.map((ex) => (
-            <button key={ex} type="button" onClick={() => ask(ex)} disabled={busy}
-              style={{ display: 'block', width: '100%', textAlign: 'left', margin: '0 0 6px', padding: '8px 10px', border: '1px solid #dfe3ea', borderRadius: 8, background: '#fff', cursor: 'pointer', fontSize: 14, color: '#1d2433' }}>
-              {ex}
-            </button>
-          ))}
+        <div>
+          <p className="label">Beispiele</p>
+          <div className="examples">
+            {EXAMPLES.map((ex) => (
+              <button key={ex} type="button" className="example" onClick={() => ask(ex)}>
+                <IconArrowRight size={15} stroke={1.8} color="#6b7a8f" aria-hidden="true" />{ex}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      {items.map((it, i) => <Answer key={items.length - i} it={it} onAsk={(q) => ask(q, it.level)} busy={busy} />)}
+      {items.map((it, i) => <Answer key={items.length - i} it={it} onAsk={(q) => ask(q, it.level)} />)}
     </div>
   );
 }
 
-function Answer({ it, onAsk, busy }) {
-  const l = LIGHT[it.light] || LIGHT.red;
+function Answer({ it, onAsk }) {
   return (
-    <article style={{ marginTop: 20, background: '#fff', border: '1px solid #dfe3ea', borderRadius: 12, padding: '14px 16px' }}>
-      <p style={{ margin: 0, fontWeight: 600 }}>{it.question}</p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', margin: '8px 0 4px', fontSize: 13 }}>
-        <span title={it.confidence_reason} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: l.bg, color: l.fg, padding: '3px 10px', borderRadius: 999, fontWeight: 600 }}>
-          <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: '50%', background: l.dot }} />{l.label} · {it.confidence} %
-        </span>
-        <span style={{ color: '#6b7385' }}>{it.level.toUpperCase()} · {it.seconds} s</span>
-      </div>
-      <div style={{ fontSize: 15, lineHeight: 1.55 }}><ReactMarkdown>{it.answer}</ReactMarkdown></div>
-      {it.contradictions && (
-        <p style={{ background: '#fff4e0', color: '#8a4b06', padding: '8px 10px', borderRadius: 8, fontSize: 14 }}><strong>Widerspruch in den Quellen:</strong> {it.contradictions}</p>
-      )}
-      {it.light !== 'green' && it.confidence_reason && (
-        <p style={{ fontSize: 13, color: '#6b7385', margin: '6px 0' }}>Warum diese Einstufung: {it.confidence_reason}</p>
-      )}
-      {it.suggestions?.length > 0 && (
-        <div style={{ margin: '8px 0' }}>
-          <p style={{ fontSize: 13, color: '#6b7385', margin: '0 0 4px' }}>Meinst du vielleicht …</p>
-          {it.suggestions.map((s) => (
-            <button key={s} type="button" disabled={busy} onClick={() => onAsk(s)}
-              style={{ display: 'inline-block', margin: '0 6px 6px 0', padding: '5px 10px', border: '1px solid #cfd5df', borderRadius: 999, background: '#f7f8fa', fontSize: 13, cursor: 'pointer', color: '#1d2433' }}>{s}</button>
-          ))}
+    <section className="answer" aria-label={`Antwort auf: ${it.question}`}>
+      <div className="card">
+        <div className="card-head">
+          <div>
+            <p className="q">{it.question}</p>
+            <span className="meta">Antwort · {LEVELS.find((l) => l.key === it.level)?.label} · {it.seconds} s</span>
+          </div>
+          <span className={`badge ${it.light}`} title={it.confidence_reason}>
+            <span className="dot" aria-hidden="true" />{LIGHT[it.light]} · {it.confidence} %
+          </span>
         </div>
-      )}
-      {it.contact && <p style={{ fontSize: 14, margin: '6px 0' }}><strong>Ansprechstelle:</strong> {it.contact}</p>}
+        <div className="prose"><ReactMarkdown>{it.answer}</ReactMarkdown></div>
+        {it.contradictions && <div className="warn"><strong>Widerspruch in den Quellen:</strong> {it.contradictions}</div>}
+        {it.light !== 'green' && it.confidence_reason && <p className="reason">Einstufung: {it.confidence_reason}</p>}
+        {it.suggestions?.length > 0 && (
+          <div className="suggest">
+            <p className="label">Meinst du vielleicht …</p>
+            {it.suggestions.map((s) => <button key={s} type="button" className="chip" onClick={() => onAsk(s)}>{s}</button>)}
+          </div>
+        )}
+        {it.contact && <p className="contact"><strong>Ansprechstelle:</strong> {it.contact}</p>}
+        <p className="ai-note">KI-generiert ({it.model}) – Quellen prüfen, bevor du dich darauf stützt.</p>
+      </div>
       {it.sources?.length > 0 && (
-        <details style={{ marginTop: 8, fontSize: 13 }} open={it.level !== 'instant'}>
-          <summary style={{ cursor: 'pointer', color: '#2f5bea' }}>Quellen ({it.sources.length})</summary>
-          <ul style={{ margin: '6px 0 0', paddingLeft: 18, color: '#3d4556' }}>
+        <>
+          <p className="label" style={{ margin: '14px 0 0' }}>Quellen</p>
+          <div className="sources">
             {it.sources.map((s) => (
-              <li key={s.doc_id + s.section}><strong>{s.title}</strong> – {s.section}<span style={{ color: '#6b7385' }}>{s.owner ? ` · Owner: ${s.owner}` : ''}{s.version ? ` · Stand ${s.version}` : ''}</span></li>
+              <div className="src" key={s.doc_id + s.section}>
+                <div className="src-id">{s.doc_id}</div>
+                <div className="src-title">{s.title?.replace(`${s.doc_id} `, '')}</div>
+                <div className="src-meta">{s.section}</div>
+                {(s.owner || s.version) && <div className="src-meta">{[s.owner, s.version && `Stand ${s.version}`].filter(Boolean).join(' · ')}</div>}
+              </div>
             ))}
-          </ul>
-        </details>
+          </div>
+        </>
       )}
-      <p style={{ fontSize: 11, color: '#8a90a0', margin: '10px 0 0' }}>KI-generiert ({it.model}) – Quellen prüfen, bevor du dich darauf stützt.</p>
-    </article>
+    </section>
   );
 }
