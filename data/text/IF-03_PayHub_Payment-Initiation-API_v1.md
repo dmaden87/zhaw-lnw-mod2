@@ -1,0 +1,254 @@
+```yaml
+openapi: 3.0.3
+info:
+  title: PayHub Payment Initiation API (IF-03)
+  version: 1.2.0
+  description: |
+    Gletscherbank AG · Wissensdatenbank Zahlungsverkehr · Schnittstellenspezifikation (WRICEF)
+
+    IF-03 – Interne REST-API, über die E-Banking und Mobile App Zahlungsaufträge an PayHub übergeben
+    und deren Status abfragen. PayHub prüft die Aufträge, ruft das Screening auf (IF-01, ScreenGuard)
+    und versendet an SIC, SIC5 (Instant), SEPA-Clearing oder SWIFT (SH-01).
+
+    - WRICEF-ID: I-005 (Typ I = Interface)
+    - Konsumenten: E-Banking, Mobile App (Digital Banking)
+    - Owner technisch: Adrian Vogel, IT Payments
+    - Owner fachlich: Kevin Moser, Digital Banking / Produktmanagement
+    - Version / Stand: 1.2.0 / 30.10.2026
+    - Klassifikation: Intern
+    - Hinweis: Fiktive Musterbank für die CAS-Projektarbeit (ZHAW). Namen, Zahlen, Preise, Systeme
+      und Kontakte sind erfunden.
+
+    Geschäftsregeln (Auszug):
+    - Instant-Tageslimite Privatkunden: CHF 10'000 (änderbar durch Kundenberatung, PAY-02).
+    - Cut-off Inland CHF 15:00 Uhr, SEPA SCT 14:00 Uhr (SH-01). Aufträge nach Cut-off erhalten
+      das nächste Bankwerktag-Datum als Ausführungsdatum.
+    - Instant-Zahlungen können nach Gutschrift nicht zurückgerufen werden (PAY-09).
+    - Ist SIC5 nicht verfügbar, liefert GET /capabilities instantAvailable = false; E-Banking und App
+      blenden die Option «Instant» aus (SH-01).
+
+    Änderungshistorie:
+    - 1.0.0 (01.03.2026): Erstversion für SIC, SEPA, SWIFT.
+    - 1.1.0 (15.05.2026): Scheme SIC5_INSTANT und Endpunkt /capabilities ergänzt.
+    - 1.2.0 (30.10.2026): Pflichtfeld creditor.address strukturiert; Feld screeningStatus im Status-Objekt.
+  contact:
+    name: IT Payments, Gletscherbank AG (fiktiv)
+servers:
+  - url: https://api.payhub.intern.gletscherbank.example/v1
+    description: Produktion (intern, nur über API-Gateway mit mTLS)
+  - url: https://api.payhub-test.intern.gletscherbank.example/v1
+    description: Testumgebung
+security:
+  - oauth2: [payments.write, payments.read]
+paths:
+  /payments:
+    post:
+      summary: Zahlungsauftrag erfassen
+      description: |
+        Nimmt einen Zahlungsauftrag entgegen. Die Antwort kommt sofort mit Status ERFASST bzw. bei
+        Instant mit dem Endstatus (AUSGEFUEHRT oder ABGEWIESEN) innert weniger Sekunden.
+        Idempotenz über Header Idempotency-Key (24 Stunden gültig).
+      operationId: createPayment
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+            example:
+              scheme: SIC5_INSTANT
+              debtorAccountIban: CH9300762011623852957
+              amount: { value: 250.00, currency: CHF }
+              creditor:
+                name: Anna Beispiel
+                iban: CH5604835012345678009
+                address: { street: Bahnhofstrasse, buildingNumber: '12', postCode: '8001', town: Zürich, country: CH }
+              remittanceInfo: Anteil Ferienwohnung
+              endToEndId: APP-20261030-77812
+      responses:
+        '201':
+          description: Auftrag angenommen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '400':
+          description: Formale Fehler (z. B. ungültige IBAN, fehlende strukturierte Adresse)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Idempotency-Key bereits mit anderem Inhalt verwendet
+        '422':
+          description: Fachlich abgelehnt (Limite überschritten, Deckung fehlt, Instant nicht verfügbar)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payments/{paymentId}:
+    get:
+      summary: Status eines Zahlungsauftrags abfragen
+      operationId: getPayment
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      responses:
+        '200':
+          description: Aktueller Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '404':
+          description: Unbekannte paymentId
+  /payments/{paymentId}/cancellation:
+    post:
+      summary: Auftrag stornieren
+      description: |
+        Nur möglich, solange der Status ERFASST oder GEPRUEFT ist. Für bereits versendete Zahlungen
+        ist ein Rückruf über PayOps Investigations nötig (PAY-09, AA-02); Instant-Zahlungen können
+        nicht storniert werden.
+      operationId: cancelPayment
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      responses:
+        '202':
+          description: Stornierung ausgeführt
+        '422':
+          description: Stornierung nicht mehr möglich (Status VERSENDET oder später)
+  /capabilities:
+    get:
+      summary: Verfügbarkeit der Zahlungsarten und aktuelle Cut-offs
+      operationId: getCapabilities
+      responses:
+        '200':
+          description: Verfügbarkeit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capabilities'
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.intern.gletscherbank.example/oauth2/token
+          scopes:
+            payments.write: Zahlungen erfassen und stornieren
+            payments.read: Zahlungsstatus lesen
+  parameters:
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, maxLength: 64 }
+  schemas:
+    PaymentRequest:
+      type: object
+      required: [scheme, debtorAccountIban, amount, creditor]
+      properties:
+        scheme:
+          type: string
+          enum: [SIC, SIC5_INSTANT, SEPA_SCT, SEPA_INST, SWIFT]
+          description: Zahlungsart; bestimmt Clearing-Weg und Cut-off.
+        debtorAccountIban:
+          type: string
+          description: Belastungskonto des Kunden.
+        requestedExecutionDate:
+          type: string
+          format: date
+          description: Gewünschtes Ausführungsdatum; bei Instant ignoriert.
+        amount:
+          $ref: '#/components/schemas/Amount'
+        creditor:
+          $ref: '#/components/schemas/Party'
+        creditorBic:
+          type: string
+          description: Pflicht bei SWIFT.
+        chargeBearer:
+          type: string
+          enum: [SHA, OUR, BEN]
+          default: SHA
+          description: Spesenoption, nur SWIFT relevant (PB-03).
+        remittanceInfo:
+          type: string
+          maxLength: 140
+        qrReference:
+          type: string
+          pattern: '^[0-9]{27}$'
+          description: QR-Referenz bei Zahlung einer QR-Rechnung an eine QR-IBAN (PAY-03).
+        endToEndId:
+          type: string
+          maxLength: 35
+    Amount:
+      type: object
+      required: [value, currency]
+      properties:
+        value: { type: number, format: decimal, minimum: 0.01 }
+        currency: { type: string, example: CHF }
+    Party:
+      type: object
+      required: [name, iban, address]
+      properties:
+        name: { type: string, maxLength: 70 }
+        iban: { type: string }
+        address:
+          type: object
+          description: Strukturierte Adresse (Pflicht seit 21.11.2025).
+          required: [street, postCode, town, country]
+          properties:
+            street: { type: string }
+            buildingNumber: { type: string }
+            postCode: { type: string }
+            town: { type: string }
+            country: { type: string, description: ISO 3166 Alpha-2 }
+    PaymentStatus:
+      type: object
+      properties:
+        paymentId: { type: string, format: uuid }
+        status:
+          type: string
+          description: Entspricht den Zahlungsstatus in PayHub (SH-01, Kapitel 4).
+          enum: [ERFASST, GEPRUEFT, COMPLIANCE_HOLD, FRAUD_HOLD, REPAIR, WARTET_AUF_FREIGABE, VERSENDET, AUSGEFUEHRT, ABGEWIESEN]
+        screeningStatus:
+          type: string
+          description: Ergebnis aus IF-01 (ScreenGuard). Gegenüber dem Kunden wird bei HOLD nur «in Bearbeitung» angezeigt.
+          enum: [PENDING, CLEAR, HOLD]
+        executionDate: { type: string, format: date }
+        rejectReason:
+          type: string
+          description: Nur bei ABGEWIESEN, siehe Error.code.
+    Capabilities:
+      type: object
+      properties:
+        instantAvailable: { type: boolean }
+        instantDailyLimitRemaining: { $ref: '#/components/schemas/Amount' }
+        cutOffs:
+          type: object
+          additionalProperties: { type: string, example: '15:00' }
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            Fehlercodes:
+            - R-IBAN: IBAN ungültig
+            - R-BIC: BIC fehlt oder ungültig
+            - R-ADR: Adresse unvollständig oder unstrukturiert
+            - R-QR: QR-Referenz ungültig oder QR-IBAN ohne QR-Referenz
+            - L-INSTANT: Instant-Tageslimite überschritten
+            - L-COVER: Deckung ungenügend
+            - S-INSTANT-OFF: SIC5 nicht verfügbar
+          enum: [R-IBAN, R-BIC, R-ADR, R-QR, L-INSTANT, L-COVER, S-INSTANT-OFF]
+        message: { type: string }
+
+```
