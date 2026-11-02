@@ -8,6 +8,15 @@ export async function proxy(request) {
   const { pathname } = request.nextUrl;
   if (pathname === '/login' || pathname === '/api/login') return NextResponse.next();
 
+  // Admin-Endpunkte (Modellprüfung, Import): Zugang über ADMIN_TOKEN statt Login,
+  // damit sie automatisiert aufgerufen werden können. Token nur in Vercel gesetzt.
+  if (pathname.startsWith('/api/admin/')) {
+    const token = process.env.ADMIN_TOKEN;
+    const given = request.nextUrl.searchParams.get('token') || request.headers.get('x-admin-token');
+    if (token && given === token) return NextResponse.next();
+    return new NextResponse('Nicht berechtigt.', { status: 401 });
+  }
+
   const password = process.env.DEMO_PASSWORD;
   if (!password) return new NextResponse('DEMO_PASSWORD ist nicht gesetzt.', { status: 503 });
 
