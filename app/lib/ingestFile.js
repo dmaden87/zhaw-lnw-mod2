@@ -8,10 +8,8 @@ import { chunkMarkdown } from './chunk';
 export const MAX_BYTES = 4 * 1024 * 1024;
 export const ALLOWED = ['docx', 'pdf', 'md', 'txt'];
 
-// Fehler, deren Text direkt dem Nutzer angezeigt werden darf
-export class UserError extends Error {
-  constructor(message, status = 400) { super(message); this.status = status; }
-}
+import { UserError, errorResponse } from './errors';
+export { UserError, errorResponse };
 
 export function checkFile(file) {
   if (!file || typeof file === 'string' || !file.size) throw new UserError('Wähle eine Datei aus.');
@@ -56,9 +54,3 @@ export async function processMarkdown(markdown, fullTitle) {
   };
 }
 
-// Einheitliche Fehlerantwort; technische Details nur ins Log
-export function errorResponse(e, context) {
-  if (e instanceof UserError) return Response.json({ error: e.message }, { status: e.status });
-  console.error(`[${context}]`, e);
-  return Response.json({ error: 'Beim Speichern ist ein unerwarteter Fehler aufgetreten. Es wurde nichts verändert. Versuche es nochmals oder melde dich beim Tech Lead.' }, { status: 500 });
-}

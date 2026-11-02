@@ -50,3 +50,18 @@ CREATE TABLE IF NOT EXISTS ratings (
   correction_doc_id  text,                   -- KOR-nnn, falls ergänzendes Wissen erfasst wurde
   question_embedding vector(768)             -- für die Kalibrierung bei ähnlichen Fragen
 );
+
+-- Rollenkonzept: user < superuser < kipm
+CREATE TABLE IF NOT EXISTS users (
+  id            serial PRIMARY KEY,
+  username      text UNIQUE NOT NULL,
+  display_name  text NOT NULL,
+  role          text NOT NULL CHECK (role IN ('user','superuser','kipm')),
+  password_hash text NOT NULL,             -- scrypt: salt:hash
+  active        boolean NOT NULL DEFAULT true,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  created_by    text,
+  last_login    timestamptz
+);
+ALTER TABLE ratings   ADD COLUMN IF NOT EXISTS rated_by   text;
+ALTER TABLE documents ADD COLUMN IF NOT EXISTS updated_by text;

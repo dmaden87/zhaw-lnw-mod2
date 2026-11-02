@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconUpload, IconExternalLink, IconReplace, IconX } from '@tabler/icons-react';
 import { requestJson, fileProblem } from '../lib/clientFetch';
+import { useMe, atLeast } from '../lib/useMe';
 
 const CATEGORIES = ['Prozess', 'Arbeitsanweisung', 'Leitfaden', 'Weisung', 'Systemhandbuch', 'Schnittstelle', 'Produktblatt', 'Meeting-Protokoll', 'Organisation', 'Compliance-Prozess', 'Risk-Prozess', 'Sonstiges'];
 const today = () => new Date().toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -12,6 +13,8 @@ export default function KnowledgeBase({ initialDocs }) {
   const [filter, setFilter] = useState('');
   const [showUpload, setShowUpload] = useState(false);
   const [replacing, setReplacing] = useState(null);
+  const me = useMe();
+  const canManage = atLeast(me, 'superuser');
   useEffect(() => setDocs(initialDocs), [initialDocs]);
   const [msg, setMsg] = useState('');
   const router = useRouter();
@@ -40,9 +43,11 @@ export default function KnowledgeBase({ initialDocs }) {
       <p className="page-sub">{active.length} von {docs.length} Dokumenten aktiv · {active.reduce((s, d) => s + d.chunks, 0)} Abschnitte werden durchsucht.</p>
       <div className="kb-bar">
         <input type="search" placeholder="Dokument suchen, z. B. PAY-02 oder Instant" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Dokumente filtern" />
-        <button type="button" className="btn-primary" onClick={() => { setShowUpload((v) => !v); setReplacing(null); }} aria-expanded={showUpload}>
-          <IconUpload size={16} stroke={1.8} style={{ verticalAlign: -3, marginRight: 6 }} aria-hidden="true" />Dokument hochladen
-        </button>
+        {canManage && (
+          <button type="button" className="btn-primary" onClick={() => { setShowUpload((v) => !v); setReplacing(null); }} aria-expanded={showUpload}>
+            <IconUpload size={16} stroke={1.8} style={{ verticalAlign: -3, marginRight: 6 }} aria-hidden="true" />Dokument hochladen
+          </button>
+        )}
       </div>
       {showUpload && <Upload docs={docs} onCancel={() => setShowUpload(false)} onDone={(m) => { setMsg({ type: 'ok', text: m }); setShowUpload(false); router.refresh(); }} />}
       {replacing && <Replace doc={replacing} onCancel={() => setReplacing(null)} onDone={(m) => { setMsg({ type: 'ok', text: m }); setReplacing(null); router.refresh(); }} />}
@@ -58,16 +63,17 @@ export default function KnowledgeBase({ initialDocs }) {
                 <a href={`/dokument/${encodeURIComponent(d.id)}`} target="_blank" rel="noopener noreferrer" className="doc-link">
                   {d.title.replace(`${d.id} `, '')}<IconExternalLink size={13} stroke={1.8} style={{ verticalAlign: -2, marginLeft: 4 }} aria-label="öffnet in neuem Tab" />
                 </a>
-                <div className="src-meta">{d.chunks} Abschnitte · <button type="button" className="link-btn" onClick={() => { setReplacing(d); setShowUpload(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}><IconReplace size={13} stroke={1.8} style={{ verticalAlign: -2, marginRight: 3 }} aria-hidden="true" />Ersetzen</button></div>
+                <div className="src-meta">{d.chunks} Abschnitte{canManage && <> · <button type="button" className="link-btn" onClick={() => { setReplacing(d); setShowUpload(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}><IconReplace size={13} stroke={1.8} style={{ verticalAlign: -2, marginRight: 3 }} aria-hidden="true" />Ersetzen</button></>}</div>
               </td>
               <td className="hide-m">{d.category}</td>
               <td className="hide-m">{d.owner || '–'}<div className="src-meta">{d.version}</div></td>
               <td>
+                {!canManage ? <span className={`status-text ${d.active ? 'on' : ''}`}>{d.active ? 'Aktiv' : 'Inaktiv'}</span> : (
                 <label className="switch" title={d.active ? 'Inaktivieren' : 'Aktivieren'}>
                   <input type="checkbox" checked={d.active} disabled={d.busy} onChange={() => toggle(d)} aria-label={`${d.id} ${d.active ? 'inaktivieren' : 'aktivieren'}`} />
                   <span className="slider" aria-hidden="true" />
                   <span className="switch-label">{d.active ? 'Aktiv' : 'Inaktiv'}</span>
-                </label>
+                </label>)}
               </td>
             </tr>
           ))}

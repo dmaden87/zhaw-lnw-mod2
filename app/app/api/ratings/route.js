@@ -1,7 +1,7 @@
 // Bewertung einer Antwort (richtig / teilweise / falsch) und optional ergänzendes Wissen.
 // Ergänzungen werden als eigenes Dokument (KOR-nnn) eingebettet und sind sofort durchsuchbar.
 import { db, toVector } from '../../../lib/db';
-import { isTestMode } from '../../../lib-auth';
+import { requireRole } from '../../../lib/users';
 import { processMarkdown, errorResponse, UserError } from '../../../lib/ingestFile';
 import { embed } from '../../../lib/gemini';
 
@@ -12,7 +12,7 @@ const VERDICTS = ['richtig', 'teilweise', 'falsch'];
 
 export async function GET(request) {
   try {
-    if (!(await isTestMode(request))) throw new UserError('Der Testing-Modus ist nicht aktiv.', 403);
+    await requireRole(request, 'kipm');
     const rows = await db().query(`SELECT verdict, count(*)::int AS n FROM ratings GROUP BY verdict`);
     const summary = Object.fromEntries(VERDICTS.map((v) => [v, rows.find((r) => r.verdict === v)?.n || 0]));
     return Response.json(summary);
@@ -23,7 +23,7 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    if (!(await isTestMode(request))) throw new UserError('Der Testing-Modus ist abgelaufen oder nicht aktiv. Schalte ihn oben wieder ein.', 403);
+    const me = await requireRole(request, 'kipm');
     const b = await request.json().catch(() => { throw new UserError('Die Bewertung konnte nicht gelesen werden. Versuche es nochmals.'); });
     if (!VERDICTS.includes(b.verdict)) throw new UserError('Wähle «richtig», «teilweise richtig» oder «falsch».');
     if (!b.question) throw new UserError('Zur Bewertung fehlt die Frage. Lade die Seite neu.');
@@ -43,9 +43,9 @@ export async function POST(request) {
       const [{ next }] = await sql.query('SELECT GREATEST(COALESCE(MAX(id), 0), 99999) + 1 AS next FROM chunks');
       await sql.transaction([
         sql.query(
-          `INSERT INTO documents (id, title, category, owner, version, classification, path, markdown, source, active, updated_at)
-           VALUES ($1,$2,'Ergänzung (Testing)','Testing-Modus',$3,'Intern','Testing-Modus',$4,'testing',true,now())`,
-          [docId, title, `1.0 / ${new Date().toLocaleDateString('de-CH')}`, markdown]),
+          `INSERT INTO documents (id, title, category, owner, version, classification, path, markdown, source, active, updated_at, updated_by)
+           VALUES ($1,$2,'Ergänzung (Testing)',$5,$3,'Intern','Testing-Modus',$4,'testing',true,now(),$6)`,
+          [docId, title, `1.0 / ${new Date().toLocaleDateString('de-CH')}`, markdown, `${me.display_name} (Testing-Modus)`, me.username]),
         ...chunks.map((c, i) => sql.query(
           'INSERT INTO chunks (id, doc_id, section, part, content, embed_text, hash, embedding) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::vector)',
           [next + i, docId, c.section, c.part, c.content, c.embed_text, c.hash, toVector(c.vector)])),
@@ -55,9 +55,9 @@ export async function POST(request) {
     let qVector = null;
     try { [qVector] = await embed([b.question], 'RETRIEVAL_QUERY'); } catch { /* Bewertung trotzdem speichern */ }
     await sql.query(
-      `INSERT INTO ratings (question, level, model, answer, confidence, light, sources, verdict, comment, correction_doc_id, question_embedding)
-       VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11::vector)`,
-      [b.question, b.level, b.model, b.answer, b.confidence, b.light, JSON.stringify(b.sources || []), b.verdict, String(b.comment || '').trim() || null, docId, qVector ? toVector(qVector) : null]);
+      `INSERT INTO ratings (question, level, model, answer, confidence, light, sources, verdict, comment, correction_doc_id, question_embedding, rated_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11::vector,$12)`,
+      [b.question, b.level, b.model, b.answer, b.confidence, b.light, JSON.stringify(b.sources || []), b.verdict, String(b.comment || '').trim() || null, docId, qVector ? toVector(qVector) : null, me.username]);
     return Response.json({ ok: true, docId });
   } catch (e) {
     return errorResponse(e, 'rating');

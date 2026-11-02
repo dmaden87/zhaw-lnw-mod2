@@ -38,6 +38,14 @@ const SCHEMA = [
      verdict text NOT NULL CHECK (verdict IN ('richtig','teilweise','falsch')),
      comment text, correction_doc_id text)`,
   `ALTER TABLE ratings ADD COLUMN IF NOT EXISTS question_embedding vector(${config.dims})`,
+  'ALTER TABLE ratings ADD COLUMN IF NOT EXISTS rated_by text',
+  'ALTER TABLE documents ADD COLUMN IF NOT EXISTS updated_by text',
+  // Rollenkonzept: user (suchen, lesen) < superuser (+ Dokumente verwalten) < kipm (+ bewerten, Benutzer verwalten)
+  `CREATE TABLE IF NOT EXISTS users (
+     id serial PRIMARY KEY, username text UNIQUE NOT NULL, display_name text NOT NULL,
+     role text NOT NULL CHECK (role IN ('user','superuser','kipm')), password_hash text NOT NULL,
+     active boolean NOT NULL DEFAULT true, created_at timestamptz NOT NULL DEFAULT now(),
+     created_by text, last_login timestamptz)`,
 ];
 
 const hashOf = (c) => createHash('sha256').update(`${config.embedModel}|${c.embed_text}`).digest('hex').slice(0, 16);

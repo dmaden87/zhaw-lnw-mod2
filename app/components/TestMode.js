@@ -1,41 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { IconFlask, IconLock } from '@tabler/icons-react';
+import { useState } from 'react';
+import { IconFlask } from '@tabler/icons-react';
 import { requestJson } from '../lib/clientFetch';
 
+// Nur für die Rolle KI-PM sichtbar; der Server prüft die Rolle bei jeder Bewertung.
 export default function TestModeBar({ active, setActive, summary }) {
-  const [asking, setAsking] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    requestJson('/api/test-mode').then((d) => setActive(d.active)).catch(() => {});
-  }, [setActive]);
-
-  async function toggle() {
-    if (active) {
-      await requestJson('/api/test-mode', { method: 'DELETE' }).catch(() => {});
-      setActive(false);
-      return;
-    }
-    setAsking((v) => !v); setError('');
-  }
-
-  async function confirm(e) {
-    e.preventDefault();
-    if (!password) { setError('Gib das Passwort ein.'); return; }
-    setBusy(true); setError('');
-    try {
-      await requestJson('/api/test-mode', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password }) });
-      setActive(true); setAsking(false); setPassword('');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <div className={`testbar${active ? ' on' : ''}`}>
       <div className="testbar-row">
@@ -44,19 +13,11 @@ export default function TestModeBar({ active, setActive, summary }) {
           <span className="testbar-sum">Bewertet: {summary.richtig} richtig · {summary.teilweise} teilweise · {summary.falsch} falsch</span>
         )}
         <label className="switch">
-          <input type="checkbox" checked={active} onChange={toggle} aria-label="Testing- und Adjustment-Modus" />
+          <input type="checkbox" checked={active} onChange={() => setActive(!active)} aria-label="Testing- und Adjustment-Modus" />
           <span className="slider" aria-hidden="true" />
           <span className="switch-label">{active ? 'Ein' : 'Aus'}</span>
         </label>
       </div>
-      {asking && !active && (
-        <form className="testbar-form" onSubmit={confirm}>
-          <IconLock size={16} stroke={1.8} color="#6b7a8f" aria-hidden="true" />
-          <input type="password" autoFocus placeholder="Passwort erneut eingeben" value={password} onChange={(e) => { setPassword(e.target.value); setError(''); }} aria-label="Passwort" />
-          <button type="submit" className="btn-primary" aria-busy={busy}>{busy ? 'Prüfe …' : 'Aktivieren'}</button>
-          {error && <p className="err" role="alert" style={{ flexBasis: '100%' }}>{error}</p>}
-        </form>
-      )}
     </div>
   );
 }

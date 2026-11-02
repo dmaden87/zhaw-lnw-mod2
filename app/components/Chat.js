@@ -6,6 +6,7 @@ import { IconSearch, IconArrowRight, IconTrash } from '@tabler/icons-react';
 import { docHref } from '../lib/slug';
 import { requestJson } from '../lib/clientFetch';
 import TestModeBar, { RatingPanel } from './TestMode';
+import { useMe, atLeast } from '../lib/useMe';
 
 const LEVELS = [
   { key: 'instant', label: 'Instant', hint: '5–10 Sek.' },
@@ -28,6 +29,7 @@ export default function Chat() {
   const [error, setError] = useState('');
   const inputRef = useRef(null);
   const nextId = useRef(1);
+  const me = useMe();
   const [testMode, setTestMode] = useState(false);
   const [summary, setSummary] = useState(null);
   const loadSummary = useCallback(() => { requestJson('/api/ratings').then(setSummary).catch(() => setSummary(null)); }, []);
@@ -58,7 +60,7 @@ export default function Chat() {
   const latest = items[0];
   return (
     <div>
-      <TestModeBar active={testMode} setActive={setTestMode} summary={summary} />
+      {atLeast(me, 'kipm') && <TestModeBar active={testMode} setActive={setTestMode} summary={summary} />}
       <form className="search" onSubmit={(e) => { e.preventDefault(); ask(); }}>
         <IconSearch size={18} stroke={1.8} color="#6b7a8f" style={{ marginTop: 9, flex: 'none' }} aria-hidden="true" />
         <textarea ref={inputRef} rows={1} value={question} aria-label="Frage" placeholder="Was ist der camt-Standard?"

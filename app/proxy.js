@@ -1,15 +1,12 @@
 import { NextResponse } from 'next/server';
-import { authToken, COOKIE } from './lib-auth';
+import { readSession } from './lib/session';
 
-// Einfacher Passwortschutz für die Demo: Login-Seite + Cookie.
-// Passwort = Umgebungsvariable DEMO_PASSWORD (in Vercel gesetzt, nie im Code).
-// Zulässig, weil die App ausschliesslich fiktive Daten der Gletscherbank AG enthält.
+// Zugangsschutz: alle Seiten und APIs nur mit gültiger Sitzung (Rollen prüfen die einzelnen Routen).
+// Admin-Endpunkte (Import, Tests, Export) über ADMIN_TOKEN, damit sie automatisiert laufen können.
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
   if (pathname === '/login' || pathname === '/api/login') return NextResponse.next();
 
-  // Admin-Endpunkte (Modellprüfung, Import): Zugang über ADMIN_TOKEN statt Login,
-  // damit sie automatisiert aufgerufen werden können. Token nur in Vercel gesetzt.
   if (pathname.startsWith('/api/admin/')) {
     const token = process.env.ADMIN_TOKEN;
     const given = request.nextUrl.searchParams.get('token') || request.headers.get('x-admin-token');
@@ -17,12 +14,10 @@ export async function proxy(request) {
     return new NextResponse('Nicht berechtigt.', { status: 401 });
   }
 
-  const password = process.env.DEMO_PASSWORD;
-  if (!password) return new NextResponse('DEMO_PASSWORD ist nicht gesetzt.', { status: 503 });
-
-  const cookie = request.cookies.get(COOKIE)?.value;
-  if (cookie && cookie === (await authToken(password))) return NextResponse.next();
-
+  if (await readSession(request)) return NextResponse.next();
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.json({ error: 'Deine Anmeldung ist abgelaufen. Lade die Seite neu und melde dich erneut an.' }, { status: 401 });
+  }
   const url = request.nextUrl.clone();
   url.pathname = '/login';
   url.search = '';

@@ -48,7 +48,7 @@ Prinzip: **RAG (Retrieval-Augmented Generation).** Das Sprachmodell wird nicht t
 
 ## 2. Ablauf einer Frage
 
-1. **Login:** Die App ist durch ein Demo-Passwort geschützt (Cookie, 30 Tage gültig). Zulässig, weil nur fiktive Daten enthalten sind; im Pilot ersetzt durch Single Sign-On.
+1. **Login:** Anmeldung mit Benutzername und Passwort (signierte Sitzung, 12 Std. gültig). Rollen siehe Kapitel 6a. Im Pilot ersetzt durch Single Sign-On.
 2. **Frage und Stufe:** Jede Frage erzeugt alle drei Stufen parallel – Instant (5–10 s Lesezeit), Basic (≤ 3 Min.) und Full (≤ 15 Min.). Instant ist meist zuerst bereit; Umschalten zeigt die anderen Stufen ohne neue Wartezeit.
 3. **Suche (ca. 0,4 s):** Die Frage wird eingebettet. Zwei Suchen laufen kombiniert: nach Bedeutung (Vektorähnlichkeit) und nach Stichworten (deutsche Volltextsuche). Die Ranglisten werden per Reciprocal Rank Fusion zusammengeführt; je nach Stufe gehen 6, 8 oder 12 Abschnitte weiter. Zusätzlich immer dabei: «Wen frage ich?» aus dem Organigramm (ORG-01).
 4. **Antwort (ca. 1–2 s):** Das Sprachmodell erhält Regeln (System-Prompt), Stufe, Frage und Abschnitte und liefert ein festes Format: Antwort, Konfidenz mit Begründung, Quellen, Widersprüche, Vorschläge, Ansprechstelle.
@@ -105,13 +105,27 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 
 | Thema | Umsetzung PoC | Im Pilot |
 | --- | --- | --- |
-| Zugang | Demo-Passwort, Cookie mit SHA-256-Hash | Single Sign-On, Berechtigungen pro Person |
-| Zugangsdaten | Nur als geschützte Umgebungsvariablen in Vercel (`DEMO_PASSWORD`, `DATABASE_URL`, `GEMINI_API_KEY`, `ADMIN_TOKEN`), nie im Repository | Secret-Management der Bank |
+| Zugang | Benutzer mit Rollen (User, Super-User, KI-PM), signierte Sitzung (HMAC, `SESSION_SECRET`) | Single Sign-On, Rollen aus dem Verzeichnis der Bank |
+| Zugangsdaten | Nur als geschützte Umgebungsvariablen in Vercel (`DEMO_PASSWORD`, `SESSION_SECRET`, `DATABASE_URL`, `GEMINI_API_KEY`, `ADMIN_TOKEN`), nie im Repository | Secret-Management der Bank |
 | Admin-Funktionen | `/api/admin/*` nur mit `ADMIN_TOKEN` | entfernt bzw. intern |
 | Daten | ausschliesslich fiktive Daten der Gletscherbank | Freigegebene Dokumente nach Berechtigungs-Audit (MP-05, Gate 1) |
 | KI-Anbieter | Gemini API, bezahlte Stufe: Eingaben werden nicht fürs Training genutzt | Vertrag mit Datenverarbeitung CH/EU, DSFA |
 | Datenhaltung | Datenbank in Frankfurt (EU) | CH/EU gemäss DSFA |
 | Transparenz | «Du sprichst mit einer KI», jede Antwort als KI-generiert gekennzeichnet (vgl. EU AI Act Art. 50) | gleich |
+
+## 6a. Rollenkonzept
+
+| Rolle | Darf |
+| --- | --- |
+| User | Fragen stellen, Antworten und Quellen sehen, Dokumente lesen |
+| Super-User | zusätzlich Dokumente hochladen, ersetzen, aktivieren und inaktivieren |
+| KI-PM | zusätzlich Testing- und Adjustment-Modus (Antworten bewerten, Wissen ergänzen) und Benutzer verwalten |
+
+- **Benutzerverwaltung:** Seite «Benutzer» (nur KI-PM): anlegen, Rolle ändern, sperren/entsperren, Passwort ändern. Passwörter gespeichert als scrypt-Hash, nie im Klartext.
+- **Start-Zugang:** Benutzername `admin` mit dem `DEMO_PASSWORD` ist immer KI-PM – zum Einrichten und als Notfallzugang.
+- **Durchsetzung:** Jede API prüft die Rolle serverseitig und bei echten Benutzern zusätzlich, ob sie noch aktiv sind; die Oberfläche blendet nicht erlaubte Funktionen nur aus.
+- **Nachvollziehbarkeit:** Hochladen, Ersetzen, Aktivieren und Bewertungen speichern den Benutzernamen (`updated_by`, `rated_by`).
+- **Pilot:** Rollen aus dem Single Sign-On der Bank übernehmen statt eigener Benutzerverwaltung.
 
 ## 7. Betrieb
 
@@ -120,8 +134,8 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Code ändern | Commit auf `main` → Vercel deployt automatisch (ca. 1–2 Min.) |
 | Wissensbasis ändern | Dokument in `data/` ersetzen → `python3 db/build_chunks.py` → committen → nach Deploy `/api/admin/ingest?step=data` aufrufen, bis `remaining` 0 ist |
 | Modell wechseln | Umgebungsvariable `EMBED_MODEL`, `GEN_MODEL_FAST`, `GEN_MODEL_FULL` oder `GEN_MODEL_FALLBACK` in Vercel setzen und neu deployen (Achtung: neues Embedding-Modell erfordert Neu-Import) |
-| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Im PoC darf jede angemeldete Person das; im Pilot nur Wissens-Owner. |
-| Testing- und Adjustment-Modus | Schalter oben im Briefing, Aktivierung nur mit erneuter Passworteingabe (gilt 8 Std.). Pro Antwort und Stufe: Bewertung richtig / teilweise richtig / falsch, Kommentar und optional ergänzendes Wissen. Ergänzungen werden als Dokument `KOR-nnn` (Kategorie «Ergänzung (Testing)») eingebettet und sind sofort durchsuchbar; in der Wissensbasis wie andere Dokumente inaktivierbar. Zähler der Bewertungen im Schalterbalken. |
+| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Nur Rollen Super-User und KI-PM. |
+| Testing- und Adjustment-Modus | Schalter oben im Briefing, nur für die Rolle KI-PM sichtbar und nutzbar. Pro Antwort und Stufe: Bewertung richtig / teilweise richtig / falsch, Kommentar und optional ergänzendes Wissen. Ergänzungen werden als Dokument `KOR-nnn` (Kategorie «Ergänzung (Testing)») eingebettet und sind sofort durchsuchbar; in der Wissensbasis wie andere Dokumente inaktivierbar. Zähler der Bewertungen im Schalterbalken. |
 | Testauswertung | `/api/admin/ratings?format=csv` (mit `ADMIN_TOKEN`) liefert alle Bewertungen als CSV für Excel – Grundlage für die KPI-Messung (Korrektheit, Kalibrierung der Ampel) |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
 | Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
