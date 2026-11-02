@@ -2,6 +2,8 @@
 
 Chronologie der wichtigsten Arbeiten und Entscheide. Neueste Einträge oben.
 
+Erarbeitet mit Unterstützung von Claude (Anthropic), Modell Claude Opus 5.5 – siehe [Deklaration KI-Einsatz](ki-einsatz.md).
+
 ## 02.11.2026 – Repository, Infrastruktur, Beta v0.5
 
 | Zeit | Ergebnis | Entscheid / Begründung |
@@ -17,7 +19,10 @@ Chronologie der wichtigsten Arbeiten und Entscheide. Neueste Einträge oben.
 | | Wechsel auf bezahlte Gemini-Stufe (Prepaid CHF 16) | Gratis-Limit 100 Embeddings/Min. bremste Import und Tests; bezahlte Stufe nutzt Eingaben nicht fürs Training |
 | Mittag | Design-Konzept 1 «Swiss corporate» umgesetzt (Navy-Seitenleiste, Stufen-Pills, Antwortkarte, Quellenkarten), Handy-Ansicht mit Kopfleiste; neue Seite «Wissensbasis» | Zwei Konzepte verglichen; Konzept 1 gewählt, weil Quellen und Kontext sichtbar bleiben – wichtig für Vertrauen |
 | | Alle drei Stufen werden pro Frage parallel erzeugt, Umschalten ohne Wartezeit; Quellen öffnen das Dokument im neuen Tab beim zitierten Kapitel (neue Dokumentansicht, auch aus der Wissensbasis verlinkt) | Wunsch Team: im Meeting mit Instant starten und ohne erneutes Fragen vertiefen; Quellen sofort prüfbar |
-| Nachmittag | Rolle Admin (Benutzer `admin`, eigenes Passwort in Vercel): darf alles inkl. Benutzerverwaltung; KI-PM ohne Benutzerverwaltung | Trennung: KI-PM verfeinert Antworten, Admin verwaltet Zugänge |
+| Nachmittag | Testautomatisierung: 84 Unit- und API-Tests (Vitest), Live-Smoke und Regression mit 12 Referenzfragen, GitHub Actions bei jedem Push und werktags | Qualität belegen statt behaupten; Regression schützt vor Rückschritten, wenn Prompt, Modell oder Wissensbasis ändern |
+| | Regression fand 2 Fehler, beide sofort behoben: Rot ohne Weiterweg (Sackgasse) und zu kurze Basic-Antwort; 1 bekannter Befund (IF-03 Authentifizierung) im Backlog | «Nie eine Sackgasse» ist eine Kernanforderung aus dem AI-Canvas |
+| | Deklaration KI-Einsatz ergänzt (`docs/ki-einsatz.md`) | Schularbeit: offenlegen, dass mit Claude (Modell Claude Opus 5.5) gearbeitet wurde und was das Team selbst entschieden und geprüft hat |
+| | Rolle Admin (Benutzer `admin`, eigenes Passwort in Vercel): darf alles inkl. Benutzerverwaltung; KI-PM ohne Benutzerverwaltung | Trennung: KI-PM verfeinert Antworten, Admin verwaltet Zugänge |
 | | Rollenkonzept User / Super-User / KI-PM mit eigener Benutzerverwaltung; Login mit Benutzername; Testing-Modus für KI-PM ohne zweites Passwort | Team-Entscheid: eigene Benutzerseite statt Passwort pro Rolle (nachvollziehbar, wer was getan hat) oder externem Anbieter (zu viel Einrichtung für den PoC) |
 | | Testing- und Adjustment-Modus: Bewertung der Antworten (richtig / teilweise / falsch), ergänzendes Wissen als KOR-Dokumente, Kalibrierung der Ampel durch Bewertungen ähnlicher Fragen, CSV-Export | Testen wird Teil der App statt separater Tabelle; Bewertungen verbessern Wissen und Ampel direkt (Feedback-Loop aus dem AI-Canvas) |
 | | Ersetzen-Funktion (neue Fassung, gleiche ID) und saubere Fehlermeldungen; Upload/Ersetzen als Transaktion | Wunsch Team; «alles oder nichts» verhindert halb ersetzte Dokumente; ersetzte Repository-Dokumente werden beim nächsten Repository-Import nicht überschrieben |

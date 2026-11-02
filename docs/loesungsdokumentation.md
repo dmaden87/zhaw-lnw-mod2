@@ -1,7 +1,7 @@
 # Lösungsdokumentation Briefing-Bot (Beta v0.5)
 
 **Stand:** 02.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Review:** JJ (fachlich), Peri (Governance)
-**Live:** https://zhaw-lnw-mod2.vercel.app (Demo-Passwort beim Team)
+**Live:** https://zhaw-lnw-mod2.vercel.app (Zugang beim Team) · **KI-Einsatz:** erarbeitet mit Claude (Anthropic), Modell Claude Opus 5.5 – siehe [ki-einsatz.md](ki-einsatz.md)
 
 Der Briefing-Bot beantwortet Fragen zu Prozessen, Schnittstellen und Fachthemen der fiktiven Gletscherbank AG in drei Detailstufen (Instant, Basic, Full). Jede Antwort stützt sich ausschliesslich auf die interne Wissensbasis, nennt ihre Quellen und zeigt mit einer Konfidenz-Ampel, wie verlässlich sie ist.
 
@@ -135,9 +135,10 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Code ändern | Commit auf `main` → Vercel deployt automatisch (ca. 1–2 Min.) |
 | Wissensbasis ändern | Dokument in `data/` ersetzen → `python3 db/build_chunks.py` → committen → nach Deploy `/api/admin/ingest?step=data` aufrufen, bis `remaining` 0 ist |
 | Modell wechseln | Umgebungsvariable `EMBED_MODEL`, `GEN_MODEL_FAST`, `GEN_MODEL_FULL` oder `GEN_MODEL_FALLBACK` in Vercel setzen und neu deployen (Achtung: neues Embedding-Modell erfordert Neu-Import) |
-| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Nur Rollen Super-User und KI-PM. |
-| Testing- und Adjustment-Modus | Schalter oben im Briefing, nur für die Rolle KI-PM sichtbar und nutzbar. Pro Antwort und Stufe: Bewertung richtig / teilweise richtig / falsch, Kommentar und optional ergänzendes Wissen. Ergänzungen werden als Dokument `KOR-nnn` (Kategorie «Ergänzung (Testing)») eingebettet und sind sofort durchsuchbar; in der Wissensbasis wie andere Dokumente inaktivierbar. Zähler der Bewertungen im Schalterbalken. |
+| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Ab Rolle Super-User. |
+| Testing- und Adjustment-Modus | Schalter oben im Briefing, ab Rolle KI-PM sichtbar und nutzbar. Pro Antwort und Stufe: Bewertung richtig / teilweise richtig / falsch, Kommentar und optional ergänzendes Wissen. Ergänzungen werden als Dokument `KOR-nnn` (Kategorie «Ergänzung (Testing)») eingebettet und sind sofort durchsuchbar; in der Wissensbasis wie andere Dokumente inaktivierbar. Zähler der Bewertungen im Schalterbalken. |
 | Testauswertung | `/api/admin/ratings?format=csv` (mit `ADMIN_TOKEN`) liefert alle Bewertungen als CSV für Excel – Grundlage für die KPI-Messung (Korrektheit, Kalibrierung der Ampel) |
+| Tests | `cd app && npm test` (Unit/API); Live-Regression `npm run test:live`; automatisch in GitHub Actions – siehe [testkonzept.md](testkonzept.md) |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
 | Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
 | Kosten prüfen | Google AI Studio → Nutzung; Vercel und Neon im Dashboard |
@@ -151,12 +152,20 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Wie hoch sind die Hypothekarzinsen? (nicht in der Wissensbasis) | Instant | 🔴 0 %, ehrlich «nicht im Kontext», 3 Vorschläge, Ansprechstelle | 1,5 s |
 | Wo steht in der camt.054 die QR-Referenz? (nur Suche) | – | Top 3 Treffer alle aus IF-02 | 0,4 s |
 
+### Testautomatisierung (02.11.2026)
+
+- **84 Unit- und API-Tests** (Ampel, Kalibrierung, Abschnitte, Dateiprüfung, Sitzung, Rechte je Rolle, Login, Zugangsschutz): alle bestanden, laufen bei jedem Push in GitHub Actions
+- **Live-Regression mit 12 Referenzfragen:** Im ersten Lauf bestanden 9 von 12. Behoben wurden zwei Fehler: Rot ohne Weiterweg und eine zu kurze Basic-Antwort. Danach bestanden 11 von 12, ein Befund ist bekannt (R04).
+- Details, Ausführung und Erweiterung durch JJ: [testkonzept.md](testkonzept.md)
+
 ## 9. Bekannte Schwächen und nächste Schritte
 
 | Befund | Massnahme | Wer / bis |
 | --- | --- | --- |
 | Entscheid E2 aus MP-05 wird bei der Fraud-Frage nicht gefunden | Testfall aufnehmen; Suche und Abschnittsgrösse für Protokolle prüfen | JJ, Deniz / M3 22.11. |
-| Bei Gelb fehlen teilweise die Vorschläge | Prompt-Regel schärfen | Deniz / M3 |
+| Bei Gelb/Rot fehlten teilweise Vorschläge und Ansprechstelle | Umgesetzt 02.11.: App ergänzt festen Weiterweg (Vorschläge + Ansprechstelle gemäss ORG-01); Unit-Test und Referenzfrage R11 | – |
+| Basic-Antwort teilweise viel zu kurz | Umgesetzt 02.11.: zu kurze Antworten werden einmal neu erzeugt; Referenzfrage R01 | – |
+| Authentifizierung der Payment Initiation API (IF-03) wird nicht erkannt (R04) | Aufteilung der OpenAPI-/YAML-Datei verbessern | Deniz / M3 |
 | Basic-Antwort vermischte zwei Timeout-Arten | Testfall aufnehmen, Prompt-Regel «Begriffe nicht vermischen» | JJ, Deniz / M3 |
 | Fehlermeldungen (Upload, Ersetzen, Antwort) | Umgesetzt 02.11.: verständliche Meldungen mit nächstem Schritt, z. B. Dateityp, Grösse, gescanntes PDF, ausgelasteter KI-Dienst, abgelaufene Anmeldung; technische Details nur im Log | – |
 | XML-Beispiel in IF-02 wird in der Aufbereitung zerlegt | Code-Blöcke in `build_chunks.py` erhalten | Deniz / M3 |

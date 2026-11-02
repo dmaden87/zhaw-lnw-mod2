@@ -178,7 +178,7 @@ Details: Budgetplan im Repository
 
 ### 13. Technische Umsetzung
 
-Entscheid Make-or-Buy für den PoC: MAKE – eigene Web-App, entwickelt mit KI-Unterstützung (Claude Code)
+Entscheid Make-or-Buy für den PoC: MAKE – eigene Web-App, entwickelt mit KI-Unterstützung (Claude von Anthropic, Modell Claude Opus 5.5; siehe docs/ki-einsatz.md)
 - Frontend & API: Next.js, gehostet auf Vercel; Code auf GitHub
 - Zugang: passwortgeschützt (einfacher Schutz genügt, da ausschliesslich gemockte Daten der fiktiven Gletscherbank)
 - Wissensbasis: 60 Dokumente → Chunking → Embeddings → Open-Source-Vektordatenbank PostgreSQL + pgvector (Kernbestandteil der Lösung); Suche kombiniert semantisch + Volltext, Metadaten (Owner, Version, Klassifikation) pro Chunk

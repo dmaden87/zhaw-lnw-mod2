@@ -233,7 +233,7 @@ Simulierter Budgetantrag an die Geschäftsleitung (fiktiv, alle Werte Annahmen):
 Nutzen (konservativ): 400 MA × 1 Std./Woche × 45 Wochen × CHF 100 = CHF 1,8 Mio. Zeitwert; bei nur 25 % Realisierung ≈ CHF 450'000 p. a. → Amortisation < 1 Jahr
 Details: Budgetplan im Repository`},
     {id:"tech", t:"Technische Umsetzung", h:"Make-or-Buy, Tools, Architektur.",
-     v:`Entscheid Make-or-Buy für den PoC: MAKE – eigene Web-App, entwickelt mit KI-Unterstützung (Claude Code)
+     v:`Entscheid Make-or-Buy für den PoC: MAKE – eigene Web-App, entwickelt mit KI-Unterstützung (Claude von Anthropic, Modell Claude Opus 5.5; siehe docs/ki-einsatz.md)
 - Frontend & API: Next.js, gehostet auf Vercel; Code auf GitHub
 - Zugang: passwortgeschützt (einfacher Schutz genügt, da ausschliesslich gemockte Daten der fiktiven Gletscherbank)
 - Wissensbasis: 60 Dokumente → Chunking → Embeddings → Open-Source-Vektordatenbank PostgreSQL + pgvector (Kernbestandteil der Lösung); Suche kombiniert semantisch + Volltext, Metadaten (Owner, Version, Klassifikation) pro Chunk

@@ -6,23 +6,29 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 
 **Team:** Peri (Projektleiterin, Risk & Compliance) · JJ (Product Manager, Fachexperte Zahlungsverkehr) · Deniz (Tech Lead)
 **Präsentation:** 4. Dezember 2026
-**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Projektjournal](docs/journal.md)
+**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Testkonzept](docs/testkonzept.md) · [Projektjournal](docs/journal.md)
+
+[![Tests](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml/badge.svg)](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml)
+
+> **KI-Einsatz:** Erarbeitet mit Unterstützung von **Claude (Anthropic), Modell Claude Opus 5.5**: Code, Dokumentation, Tests und Moderation des AI-Canvas. Entscheide, Inhalte und Prüfung liegen beim Team. Details: [Deklaration KI-Einsatz](docs/ki-einsatz.md).
 
 ## Struktur
 
 | Ordner | Inhalt |
 | --- | --- |
-| [`app/`](app/) | Web-App (Next.js), Deploy über Vercel, passwortgeschützt (Login-Seite) |
+| [`app/`](app/) | Web-App (Next.js), Deploy über Vercel, Login mit Rollen; automatisierte Tests in `app/tests/` |
 | [`db/`](db/) | Datenbankschema (PostgreSQL + pgvector) und Import-Skripte |
 | [`data/`](data/) | Wissensdatenbank Zahlungsverkehr der Gletscherbank (60 Dokumente inkl. Schnittstellen) |
-| [`docs/`](docs/) | AI-Canvas, Project Charter, Projektplan, Risiken, Budget, Folien |
-| [`tests/`](tests/) | Testset mit Soll-Antworten und Auswertungen |
+| [`docs/`](docs/) | AI-Canvas, Lösungsdokumentation, Testkonzept, Deklaration KI-Einsatz, Journal (+ PDFs) |
+| [`tests/`](tests/) | Referenzfragen für die Live-Regression, fachlicher Testkatalog (JJ) |
+| [`.github/`](.github/workflows/tests.yml) | GitHub Actions: Tests bei jedem Push, Live-Regression werktags |
 
 ## Lösung auf einen Blick
 
 - **Wissensbasis:** Dokumente → Abschnitte (Chunks) → Embeddings → Vektordatenbank PostgreSQL + pgvector
 - **Antwort:** relevante Abschnitte finden, Antwort in der gewählten Stufe erzeugen, Quellen und Konfidenz-Ampel (Grün/Gelb/Rot) anzeigen
-- **Zugang PoC:** Web-App auf Vercel mit Demo-Passwort; Zielbild: native Windows-Anwendung
+- **Zugang PoC:** Web-App auf Vercel mit Benutzern und Rollen (User, Super-User, KI-PM, Admin); Zielbild: native Windows-Anwendung
+- **Qualität:** 84 automatisierte Unit- und API-Tests, Live-Smoke und Regression mit Referenzfragen, Testing-Modus für das fachliche Testing
 
 ## Meilensteine
 
@@ -39,9 +45,10 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 
 ```bash
 cd app
-cp .env.example .env.local   # DEMO_PASSWORD setzen
+cp .env.example .env.local   # ADMIN_PASSWORD, SESSION_SECRET usw. setzen
 npm install
 npm run dev
+npm test                     # automatisierte Tests
 ```
 
 Zugangsdaten (Passwort, Datenbank, LLM) gehören nie ins Repository, sondern in `.env.local` bzw. in die Environment Variables von Vercel.
