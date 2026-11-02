@@ -30,6 +30,14 @@ const SCHEMA = [
   'ALTER TABLE documents ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true',
   "ALTER TABLE documents ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'repo'",
   'ALTER TABLE documents ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now()',
+  // Testing- und Adjustment-Modus: Bewertungen der Antworten
+  `CREATE TABLE IF NOT EXISTS ratings (
+     id serial PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now(),
+     question text NOT NULL, level text NOT NULL, model text, answer text,
+     confidence integer, light text, sources jsonb,
+     verdict text NOT NULL CHECK (verdict IN ('richtig','teilweise','falsch')),
+     comment text, correction_doc_id text)`,
+  `ALTER TABLE ratings ADD COLUMN IF NOT EXISTS question_embedding vector(${config.dims})`,
 ];
 
 const hashOf = (c) => createHash('sha256').update(`${config.embedModel}|${c.embed_text}`).digest('hex').slice(0, 16);

@@ -29,7 +29,10 @@ export async function processFile(file, fullTitle) {
     throw new UserError('Die Datei konnte nicht gelesen werden. Ist sie beschädigt oder passwortgeschützt? Speichere sie neu und versuche es nochmals.', 422);
   }
   if (markdown.length < 50) throw new UserError('Im Dokument wurde kaum Text gefunden. Eingescannte PDFs ohne Texterkennung können nicht gelesen werden.', 422);
+  return processMarkdown(markdown, fullTitle);
+}
 
+export async function processMarkdown(markdown, fullTitle) {
   const chunks = chunkMarkdown(markdown).map((c) => ({ ...c, embed_text: `${fullTitle}\nAbschnitt: ${c.section}\n\n${c.content}` }));
   if (chunks.length > 300) throw new UserError(`Das Dokument ist zu umfangreich (${chunks.length} Abschnitte, höchstens 300). Teile es in mehrere Dokumente auf.`, 413);
 

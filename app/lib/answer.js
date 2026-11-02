@@ -1,5 +1,6 @@
 import { config } from './config';
-import { retrieve, contacts } from './retrieve';
+import { retrieve, contacts, similarRating } from './retrieve';
+import { embed } from './gemini';
 
 const BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
@@ -63,10 +64,27 @@ function traffic(llmConfidence, topScore, hasContradiction) {
   return { value, light: value >= 85 ? 'green' : value >= 60 ? 'yellow' : 'red', cap };
 }
 
+// Kalibrierung durch Testbewertungen einer sehr ähnlichen Frage:
+// falsch → höchstens 55 % (Rot), teilweise → höchstens 75 % (Gelb), richtig → +5 Punkte (innerhalb der Suchgrenze).
+// Wurde zur falschen/teilweisen Antwort ergänzendes Wissen erfasst und jetzt gefunden, entfällt die Abwertung.
+function calibrate(amp, rated, hits) {
+  if (!rated) return '';
+  const fixed = rated.correction_doc_id && hits.some((h) => h.doc_id === rated.correction_doc_id);
+  if (rated.verdict === 'falsch' && !fixed) amp.value = Math.min(amp.value, 55);
+  else if (rated.verdict === 'teilweise' && !fixed) amp.value = Math.min(amp.value, 75);
+  else if (rated.verdict === 'richtig' || fixed) amp.value = Math.min(amp.cap, amp.value + 5);
+  amp.light = amp.value >= 85 ? 'green' : amp.value >= 60 ? 'yellow' : 'red';
+  const what = { richtig: 'als richtig', teilweise: 'als teilweise richtig', falsch: 'als falsch' }[rated.verdict];
+  return fixed
+    ? `Kalibriert: Eine ähnliche Frage wurde im Test ${what} bewertet; die dazu erfasste Ergänzung ${rated.correction_doc_id} ist berücksichtigt.`
+    : `Kalibriert: Eine ähnliche Frage wurde im Test ${what} bewertet.`;
+}
+
 export async function answer(question, levelKey = 'basic') {
   const level = LEVELS[levelKey] || LEVELS.basic;
   const t0 = Date.now();
-  const [hits, org] = await Promise.all([retrieve(question, level.k), contacts()]);
+  const [qVector] = await embed([question], 'RETRIEVAL_QUERY');
+  const [hits, org, rated] = await Promise.all([retrieve(question, level.k, qVector), contacts(), similarRating(qVector)]);
   const t1 = Date.now();
   const context = [...hits, ...org.filter((o) => !hits.some((h) => h.id === o.id))]
     .map((c, i) => `[${i + 1}] ${c.doc_id} | ${c.title} | Abschnitt: ${c.section} | Owner: ${c.owner || '–'} | Stand: ${c.version || '–'}\n${c.content}`)
@@ -84,6 +102,7 @@ export async function answer(question, levelKey = 'basic') {
   }
   const topScore = hits.length ? Math.max(...hits.map((h) => h.score)) : 0;
   const amp = traffic(result.confidence, topScore, Boolean(result.contradictions && result.contradictions.trim()));
+  const calibration = calibrate(amp, rated, hits);
 
   const docs = new Map([...hits, ...org].map((h) => [h.doc_id, h]));
   const sources = (result.sources || [])
@@ -95,12 +114,12 @@ export async function answer(question, levelKey = 'basic') {
     question, level: levelKey, model,
     answer: result.answer,
     confidence: amp.value, light: amp.light,
-    confidence_reason: result.confidence_reason,
+    confidence_reason: calibration ? `${result.confidence_reason} ${calibration}` : result.confidence_reason,
     contradictions: result.contradictions || '',
     suggestions: amp.light === 'green' ? [] : (result.suggestions || []).slice(0, 3),
     contact: amp.light === 'green' ? '' : (result.contact || ''),
     sources,
-    debug: { llmConfidence: result.confidence, topScore, cap: amp.cap, retrievalMs: t1 - t0, totalMs: Date.now() - t0,
+    debug: { llmConfidence: result.confidence, topScore, cap: amp.cap, rated, calibration, retrievalMs: t1 - t0, totalMs: Date.now() - t0,
       hits: hits.map((h) => ({ doc_id: h.doc_id, section: h.section, score: h.score, rrf: Number(h.rrf.toFixed(4)) })) },
   };
 }

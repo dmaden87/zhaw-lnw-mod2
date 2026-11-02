@@ -158,3 +158,20 @@ tr.inactive td { color: var(--faint); } tr.inactive .doc-link { color: var(--fai
 .upload-head { display: flex; justify-content: space-between; align-items: center; }
 .icon-btn { background: none; border: 0; cursor: pointer; color: var(--muted); padding: 4px; border-radius: 6px; }
 .icon-btn:hover { background: var(--panel); color: var(--ink); }
+.testbar { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin: 0 0 14px; }
+.testbar.on { border-color: #b8c7f5; background: #f2f5ff; }
+.testbar-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.testbar-title { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; flex: 1; }
+.testbar-sum { font-size: 12px; color: var(--muted); }
+.testbar-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.testbar-form input { flex: 1; min-width: 160px; padding: 8px 10px; font-size: 15px; border: 1px solid var(--line-strong); border-radius: 8px; }
+.rating { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #b8c7f5; display: grid; gap: 8px; }
+.rating textarea { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(--line-strong); border-radius: 8px; resize: vertical; }
+.rating .btn-primary { justify-self: start; }
+.rating.saved { display: block; background: var(--green-bg); color: var(--green-fg); border: 0; border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+.verdicts { display: flex; gap: 6px; flex-wrap: wrap; }
+.verdict { border: 1px solid var(--line-strong); background: var(--white); border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--ink); }
+.verdict.richtig[aria-checked="true"] { background: var(--green-bg); border-color: var(--green-dot); color: var(--green-fg); font-weight: 600; }
+.verdict.teilweise[aria-checked="true"] { background: var(--yellow-bg); border-color: var(--yellow-dot); color: var(--yellow-fg); font-weight: 600; }
+.verdict.falsch[aria-checked="true"] { background: var(--red-bg); border-color: var(--red-dot); color: var(--red-fg); font-weight: 600; }
+@media (max-width: 760px) { .testbar-title { font-size: 13px; } .rating .btn-primary { justify-self: stretch; } }

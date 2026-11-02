@@ -1,10 +1,11 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { IconSearch, IconArrowRight, IconTrash } from '@tabler/icons-react';
 import { docHref } from '../lib/slug';
 import { requestJson } from '../lib/clientFetch';
+import TestModeBar, { RatingPanel } from './TestMode';
 
 const LEVELS = [
   { key: 'instant', label: 'Instant', hint: '5–10 Sek.' },
@@ -27,6 +28,10 @@ export default function Chat() {
   const [error, setError] = useState('');
   const inputRef = useRef(null);
   const nextId = useRef(1);
+  const [testMode, setTestMode] = useState(false);
+  const [summary, setSummary] = useState(null);
+  const loadSummary = useCallback(() => { requestJson('/api/ratings').then(setSummary).catch(() => setSummary(null)); }, []);
+  useEffect(() => { if (testMode) loadSummary(); }, [testMode, loadSummary]);
 
   const update = (id, lvl, patch) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, results: { ...it.results, [lvl]: { ...it.results[lvl], ...patch } } } : it)));
@@ -53,6 +58,7 @@ export default function Chat() {
   const latest = items[0];
   return (
     <div>
+      <TestModeBar active={testMode} setActive={setTestMode} summary={summary} />
       <form className="search" onSubmit={(e) => { e.preventDefault(); ask(); }}>
         <IconSearch size={18} stroke={1.8} color="#6b7a8f" style={{ marginTop: 9, flex: 'none' }} aria-hidden="true" />
         <textarea ref={inputRef} rows={1} value={question} aria-label="Frage" placeholder="Was ist der camt-Standard?"
@@ -95,12 +101,12 @@ export default function Chat() {
         </div>
       )}
 
-      {items.map((it) => <Answer key={it.id} it={it} level={level} setLevel={setLevel} onAsk={ask} />)}
+      {items.map((it) => <Answer key={it.id} it={it} level={level} setLevel={setLevel} onAsk={ask} testMode={testMode} onRated={loadSummary} />)}
     </div>
   );
 }
 
-function Answer({ it, level, setLevel, onAsk }) {
+function Answer({ it, level, setLevel, onAsk, testMode, onRated }) {
   const r = it.results[level];
   const a = r?.data;
   return (
@@ -143,6 +149,7 @@ function Answer({ it, level, setLevel, onAsk }) {
             )}
             {a.contact && <p className="contact"><strong>Ansprechstelle:</strong> {a.contact}</p>}
             <p className="ai-note">KI-generiert ({a.model}) – Quellen prüfen, bevor du dich darauf stützt.</p>
+            {testMode && <RatingPanel key={`${it.id}-${level}`} question={it.question} level={level} data={a} onSaved={onRated} />}
           </>
         )}
       </div>

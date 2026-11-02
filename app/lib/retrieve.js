@@ -2,8 +2,8 @@ import { db, toVector } from './db';
 import { embed } from './gemini';
 
 // Kombinierte Suche: Bedeutung (Vektor) + Stichworte (Volltext), zusammengeführt per Reciprocal Rank Fusion.
-export async function retrieve(question, k = 8) {
-  const [vector] = await embed([question], 'RETRIEVAL_QUERY');
+export async function retrieve(question, k = 8, vector = null) {
+  if (!vector) [vector] = await embed([question], 'RETRIEVAL_QUERY');
   const rows = await db().query(
     `WITH v AS (
        SELECT c.id, row_number() OVER (ORDER BY c.embedding <=> $1::vector) AS r,
@@ -34,4 +34,17 @@ export async function contacts() {
             0::float AS score, 0::float AS rrf
        FROM chunks c JOIN documents d ON d.id = c.doc_id
       WHERE c.doc_id = 'ORG-01' AND d.active AND c.section ILIKE '%Wen frage ich%'`);
+}
+
+// Kalibrierung: die ähnlichste bereits bewertete Frage (Testing-Modus), ab Ähnlichkeit 0,88
+export async function similarRating(vector) {
+  try {
+    const [r] = await db().query(
+      `SELECT verdict, correction_doc_id, question, level, round((1 - (question_embedding <=> $1::vector))::numeric, 3)::float AS sim
+         FROM ratings WHERE question_embedding IS NOT NULL
+        ORDER BY question_embedding <=> $1::vector, id DESC LIMIT 1`, [toVector(vector)]);
+    return r && r.sim >= 0.88 ? r : null;
+  } catch {
+    return null; // Tabelle noch nicht vorhanden o. Ä. – Antwort ohne Kalibrierung
+  }
 }

@@ -33,3 +33,20 @@ CREATE TABLE IF NOT EXISTS chunks (
 
 CREATE INDEX IF NOT EXISTS chunks_embedding_idx ON chunks USING hnsw (embedding vector_cosine_ops); -- semantische Suche
 CREATE INDEX IF NOT EXISTS chunks_tsv_idx ON chunks USING gin (tsv);                               -- Volltextsuche
+
+-- Testing- und Adjustment-Modus: Bewertungen der Antworten
+CREATE TABLE IF NOT EXISTS ratings (
+  id                 serial PRIMARY KEY,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  question           text NOT NULL,
+  level              text NOT NULL,          -- instant | basic | full
+  model              text,
+  answer             text,
+  confidence         integer,                -- Ampelwert zum Zeitpunkt der Bewertung
+  light              text,                   -- green | yellow | red
+  sources            jsonb,
+  verdict            text NOT NULL CHECK (verdict IN ('richtig','teilweise','falsch')),
+  comment            text,
+  correction_doc_id  text,                   -- KOR-nnn, falls ergänzendes Wissen erfasst wurde
+  question_embedding vector(768)             -- für die Kalibrierung bei ähnlichen Fragen
+);
