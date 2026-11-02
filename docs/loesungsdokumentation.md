@@ -182,7 +182,7 @@ Grundsatz: Was zuverlässig sein muss, prüft die App mit festen Regeln **ohne K
 
 ### Testautomatisierung (02.11.2026)
 
-- **134 Unit- und API-Tests** (Ampel, Kalibrierung, Abschnitte, Dateiprüfung, Sitzung, Rechte je Rolle, Login, Zugangsschutz, Schutzmechanismen): alle bestanden, laufen bei jedem Push in GitHub Actions
+- **137 Unit- und API-Tests** (Ampel, Kalibrierung, Abschnitte, Dateiprüfung, Sitzung, Rechte je Rolle, Login, Zugangsschutz, Schutzmechanismen): alle bestanden, laufen bei jedem Push in GitHub Actions
 - **Live-Regression mit 12 Referenzfragen:** Im ersten Lauf bestanden 9 von 12. Behoben wurden zwei Fehler: Rot ohne Weiterweg und eine zu kurze Basic-Antwort. Danach bestanden 11 von 12, ein Befund ist bekannt (R04).
 - Details, Ausführung und Erweiterung durch JJ: [testkonzept.md](testkonzept.md)
 

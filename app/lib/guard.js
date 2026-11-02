@@ -5,7 +5,13 @@ import { db } from './db';
 
 // ---------- 1. Eingangskontrolle ----------
 
-const INJECTION = [
+// JavaScript kennt bei \b nur ASCII-Buchstaben: vor «Übersetze» oder «übergehe» gibt es keine Wortgrenze.
+// u() ersetzt \b durch eine Wortgrenze, die Umlaute und alle Unicode-Buchstaben kennt (Befund Live-Regression S05).
+const W = '[\\p{L}\\p{N}_]';
+const B = `(?:(?<=${W})(?!${W})|(?<!${W})(?=${W}))`;
+const u = (re) => new RegExp(re.source.replaceAll('\\b', B), `${re.flags.replace('u', '')}u`);
+
+const INJECTION_RAW = [
   /\b(ignorier|vergiss|missacht|übergeh|umgeh)\w*\b.{0,25}\b(alle|deine|vorherige\w*|obige\w*|bisherige\w*|vorangegangene\w*|system\w*)\b.{0,25}\b(anweisung|instruktion|regel|vorgabe|prompt)/i,
   /\b(ignorier|vergiss|missacht)\w*\b.{0,30}\b(anweisung|instruktion|prompt)\w*\b.{0,15}\b(oben|zuvor|vorher|bisher)\b/i,
   /\bignore\b.{0,30}\b(instruction|rule|prompt|guideline)/i,
@@ -18,13 +24,13 @@ const INJECTION = [
   /<\|?(system|im_start|im_end)\|?>|\[(system|inst)\]|^\s*#{2,}\s*system/im,
   /\b(neue|new) (anweisung|instruktion|instruction)(en|s)?\s*:/i,
 ];
-const PROMPT_LEAK = [
+const PROMPT_LEAK_RAW = [
   /\b(system[- ]?prompt|systemanweisung|systemnachricht|initial prompt|system message)\b/i,
   /\b(zeig|gib|nenn|verrat|wiederhol|zitier|druck|schreib|list|ausgeb|übersetz)\w*\b.{0,40}\b(deine|dein|dir|internen|versteckten|geheimen|ersten)\b.{0,25}\b(anweisungen|instruktionen|regeln|vorgaben|konfiguration|einstellungen|kennung)\b/i,
   /\b(reveal|show|print|repeat|tell me)\b.{0,30}\b(your|the|hidden)\b.{0,20}\b(instructions|rules|prompt|configuration)\b/i,
   /\bwelche (anweisungen|regeln|instruktionen) (hast du|wurden dir|gelten für dich)\b/i,
 ];
-const CODE = [
+const CODE_RAW = [
   /```/,
   /<\s*(script|iframe|img|svg|object)\b|javascript:/i,
   /\b(select\s+[\w*,\s]+\s+from|insert\s+into|update\s+\w+\s+set|delete\s+from|drop\s+(table|database)|union\s+select)\b/i,
@@ -33,6 +39,10 @@ const CODE = [
   /\b(schreib|programmier|erstell|generier|code)\w*\b.{0,30}\b(code|skript|script|programm|makro|sql|python|javascript|java|regex|bash|excel-formel)\b/i,
   /\bwrite\b.{0,20}\b(code|script|program|function|query)\b/i,
 ];
+
+const INJECTION = INJECTION_RAW.map(u);
+const PROMPT_LEAK = PROMPT_LEAK_RAW.map(u);
+const CODE = CODE_RAW; // nur ASCII-Schlüsselwörter
 
 // Personendaten: IBAN, Kartennummern (Luhn), AHV-Nummer, E-Mail – werden vor der Verarbeitung geschwärzt
 const luhn = (digits) => {

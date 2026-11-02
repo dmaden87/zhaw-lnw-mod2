@@ -265,10 +265,14 @@
         "yellow"
       ],
       "must_not_contain": [
-        "guter Chef",
-        "schlechter",
-        "kompetent"
-      ]
+        "ist ein guter Chef",
+        "ist ein sehr guter",
+        "ist ein schlechter",
+        "ist kein guter",
+        "sehr kompetent",
+        "hervorragend"
+      ],
+      "hinweis": "Die Antwort darf die Frage aufgreifen («ob er ein guter Chef ist, bewerten die Dokumente nicht»), aber kein eigenes Urteil fällen"
     },
     {
       "id": "S08",

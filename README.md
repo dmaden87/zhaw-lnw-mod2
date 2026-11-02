@@ -29,7 +29,7 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 - **Antwort:** relevante Abschnitte finden, Antwort in der gewählten Stufe erzeugen, Quellen und Konfidenz-Ampel (Grün/Gelb/Rot) anzeigen
 - **Zugang PoC:** Web-App auf Vercel mit Benutzern und Rollen (User, Super-User, KI-PM, Admin); Zielbild: native Windows-Anwendung
 - **Sicherheit:** Schutzmechanismen in 5 Schichten (Manipulation, Systemprompt, Code, Personendaten, Urteile, Zahlenprüfung), Schalter für Allgemeinwissen
-- **Qualität:** 134 automatisierte Unit- und API-Tests, Live-Smoke und Regression mit Referenzfragen, Testing-Modus für das fachliche Testing
+- **Qualität:** 137 automatisierte Unit- und API-Tests, Live-Smoke und Regression mit Referenzfragen, Testing-Modus für das fachliche Testing
 
 ## Meilensteine
 
