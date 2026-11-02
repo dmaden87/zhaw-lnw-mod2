@@ -15,7 +15,8 @@ Chronologie der wichtigsten Arbeiten und Entscheide. Neueste Einträge oben.
 | | Modellwahl per Live-Test (`docs/modellwahl.md`) | Neuestes Modell zu langsam (85 s); 3.5 Flash Lite 0,7 s |
 | | Wissensbasis aufbereitet: 60 Dokumente → 498 Abschnitte, eingebettet und gespeichert | – |
 | | Wechsel auf bezahlte Gemini-Stufe (Prepaid CHF 16) | Gratis-Limit 100 Embeddings/Min. bremste Import und Tests; bezahlte Stufe nutzt Eingaben nicht fürs Training |
-| Mittag | Chat mit Stufen, kombinierter Suche, Konfidenz-Ampel, Quellen und Vorschlägen live | Beta v0.5; erste Testfragen siehe `docs/loesungsdokumentation.md` |
+| Mittag | Vercel Web Analytics eingebunden | Nutzung messbar machen (KPI «Nutzungsrate» im Canvas) |
+| | Chat mit Stufen, kombinierter Suche, Konfidenz-Ampel, Quellen und Vorschlägen live | Beta v0.5; erste Testfragen siehe `docs/loesungsdokumentation.md` |
 
 ## 01.11.2026 – Konzept
 

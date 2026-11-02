@@ -42,6 +42,7 @@ flowchart LR
 | Web-App | Next.js 16 auf Vercel (Hobby) | Login, Chat, API | gratis |
 | Vektordatenbank | Neon PostgreSQL mit pgvector, Region Frankfurt | Speichert 498 Abschnitte mit Embeddings | gratis |
 | KI-Modelle | Google Gemini API, bezahlte Stufe | Embeddings und Antworten | Prepaid CHF 16 |
+| Nutzungsstatistik | Vercel Web Analytics (`@vercel/analytics`) | Seitenaufrufe und Besuche, ohne Cookies | gratis |
 
 Prinzip: **RAG (Retrieval-Augmented Generation).** Das Sprachmodell wird nicht trainiert; es fasst nur zusammen, was die Suche in der Wissensbasis findet. Dadurch sind Antworten belegbar, und eine geänderte Weisung wirkt sofort nach dem nächsten Import.
 
@@ -116,6 +117,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Wissensbasis ändern | Dokument in `data/` ersetzen → `python3 db/build_chunks.py` → committen → nach Deploy `/api/admin/ingest?step=data` aufrufen, bis `remaining` 0 ist |
 | Modell wechseln | Umgebungsvariable `EMBED_MODEL`, `GEN_MODEL_FAST`, `GEN_MODEL_FULL` oder `GEN_MODEL_FALLBACK` in Vercel setzen und neu deployen (Achtung: neues Embedding-Modell erfordert Neu-Import) |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
+| Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
 | Kosten prüfen | Google AI Studio → Nutzung; Vercel und Neon im Dashboard |
 
 ## 8. Erste Testergebnisse (02.11.2026)
