@@ -2,11 +2,12 @@
 
 *Chat-basiertes Tool für komprimierte Informationen zu Prozessen und Themen*
 
-Team: JJ, Peri, Deniz · Version 0.2 · Stand 01.11.2026
+Team: JJ, Peri, Deniz · Version 0.2 · Stand 02.11.2026
 
 ## Warum? Problem & Nutzen
 
 ### 1. Problem & Ausgangslage
+
 Kernproblem: Mitarbeitende werden laufend mit Anfragen und Aufgaben konfrontiert, für die ihnen das Basiswissen im Moment fehlt – fachlich (z. B. Payment-Ablauf: Autorisierung, Settlement), technisch/architektonisch (Was macht diese Schnittstelle? Welche Datenfelder werden übertragen? Was macht dieses Tool?) und prozessual (Wie läuft der Gesamtprozess?).
 
 Ursachen:
@@ -25,6 +26,7 @@ Ausmass:
 - In einem Meeting von 30–45 Min. mit 4–5 Personen muss mindestens 1 Person danach 1–2 Std. zum Basisthema recherchieren.
 
 ### 2. Value Proposition
+
 Kondensiertes, quellenbasiertes Wissen genau dann, wenn es gebraucht wird – in 3 Detailstufen:
 - INSTANT (Lesezeit 5–10 Sek.): sofort gesprächsbereit – 2–3 Kernsätze
 - BASIC (Lesezeit ≤ 3 Min.): noch im Meeting mehr Verständnis – Kernpunkte, Ablauf, Begriffe
@@ -37,6 +39,7 @@ Nutzen:
 - Jede Aussage mit Quelle und Konfidenz-Ampel (Grün/Gelb/Rot) → nachprüfbar, kein Raten, keine Sackgasse
 
 ### 3. Nutzer & Stakeholder
+
 - Praktisch alle Mitarbeitenden, je in anderem Kontext (fachlich, technisch, prozessual)
 - Meeting-Teilnehmende (Primärnutzer): schnell auf Stand kommen, aktiv mitreden
 - Neue Mitarbeitende: besonders stark betroffen, grösster Hebel beim Onboarding
@@ -58,12 +61,14 @@ Nutzungsmomente:
 ## Was macht die KI? Prediction → Judgment → Action → Outcome
 
 ### 4. KI-Aufgabe (Prediction)
+
 - Relevante Dokumentstellen zu einer Frage finden (Retrieval).
 - Daraus eine kompakte, quellenbasierte Zusammenfassung erzeugen (Generierung) – wahlweise in der Stufe INSTANT, BASIC oder FULL.
 - Konfidenz der Antwort schätzen (Ampel) und bei Unsicherheit Alternativen bzw. Ansprechperson vorschlagen.
 - Technik: RAG mit LLM.
 
 ### 5. Judgment (menschliche Beurteilung)
+
 Fehlerkosten: Eine falsche Antwort ist fatal – «nichts gefunden» aber ebenso. Daher weder raten noch einfach ablehnen, sondern Sicherheit transparent machen.
 
 Konfidenz-Ampel zu jeder Antwort:
@@ -82,6 +87,7 @@ Widersprüche zwischen Quellen:
 Verantwortung: Der Mensch entscheidet; der Bot liefert Kontext, keine Entscheidungen.
 
 ### 6. Aktion
+
 - Während des Meetings: INSTANT lesen → sofort mitreden und Expertise einbringen; bei Bedarf BASIC für mehr Tiefe.
 - Vor dem Meeting: BASIC/FULL als Vorbereitung.
 - Nach dem Meeting: FULL statt eigener Nachrecherche; Quelle öffnen, wo nötig.
@@ -89,6 +95,7 @@ Verantwortung: Der Mensch entscheidet; der Bot liefert Kontext, keine Entscheidu
 - Zugang PoC: Web-App (passwortgeschützt); Zielbild: native Windows-Anwendung, diskret während Meetings per Tastenkürzel aufrufbar.
 
 ### 7. Outcome & KPIs
+
 Wirkung (quantitativ):
 - Nachrecherche-Aufwand pro Meeting: von heute 1–2 Std. auf < 15 Min. (= Lesezeit FULL)
 - Nutzungsrate: Tool wird in ≥ 3 von 5 Meetings genutzt
@@ -109,6 +116,7 @@ Beispielrechnung Business Case: 10 Meetings/Woche × 1 Person × 1,5 Std. Nachre
 ## Womit? Daten & Lernen
 
 ### 8. Input-Daten (Wissensbasis)
+
 Scope:
 - MVP (LNW): Unternehmenswissen inkl. Meeting-Protokolle und Transkripte → damit ist auch Situation 1 («Was wurde besprochen/entschieden?») ohne persönliche Mails abgedeckt
 - V1 (Roadmap): zusätzlich persönliche Quellen – eigene Mails, Teams-Chats, OneDrive
@@ -126,11 +134,13 @@ Demo-Datenbasis: Wissensdatenbank Zahlungsverkehr der fiktiven «Gletscherbank A
 - Jedes Dokument mit Owner, Version und Klassifikation → Metadaten für Quellenangaben
 
 ### 9. «Training» / Aufbau Wissensbasis
+
 - Kein eigenes Modelltraining – vortrainiertes LLM.
 - Chunking → Embeddings → Vektor-Datenbank, bei jeder Frage durchsucht.
 - Anpassung über System-Prompt (Rolle, Antwortformat, Ablehnungsregel).
 
 ### 10. Feedback-Loop
+
 - Daumen hoch/runter pro Antwort, optional Kommentar.
 - Testset bei neuen Dokumenten oder Prompt-Änderungen erneut laufen lassen.
 - Wissens-Owner (in jedem Dokument hinterlegt, z. B. Prozesseigner PayOps) erhalten Hinweise auf veraltete/fehlende Dokumente.
@@ -138,8 +148,9 @@ Demo-Datenbasis: Wissensdatenbank Zahlungsverkehr der fiktiven «Gletscherbank A
 ## Wie & unter welchen Bedingungen? Umsetzung
 
 ### 11. Risiken & Gegenmassnahmen
+
 - Halluzinationen → Quellenpflicht, Ablehnungsregel, Testset
-- Datenschutz → Datenschutz-Folgenabschätzung (DSFA) vor Pilot; Hosting CH/EU (MP-05)
+- Datenschutz → Datenschutz-Folgenabschätzung (DSFA) vor Pilot; Hosting CH/EU (MP-05); LLM in bezahlter Stufe, d. h. keine Nutzung der Eingaben für Modelltraining durch den Anbieter
 - Zu breite Berechtigungen (offene SharePoint-Sites) → Berechtigungs-Audit als Gate 1 vor Pilotstart (MP-05, E4)
 - Sensible Meetings → keine KI-Begleitung bei Personalfragen, GwG-/Fraud-Fällen und Sanktionstreffern (MP-05, E2; WE-03)
 - Transkripte → Löschung nach 30 Tagen, kein Rohaudio (MP-05, E3)
@@ -149,12 +160,13 @@ Demo-Datenbasis: Wissensdatenbank Zahlungsverkehr der fiktiven «Gletscherbank A
 - Übervertrauen → Hinweis «KI-generiert, Quelle prüfen»; bei Widerspruch Protokoll vor Transkript
 - Ablenkung im Meeting → INSTANT bewusst kurz halten
 - Regulatorik → Einschätzung (Vorschlag, durch Peri zu prüfen):
-  · Schweiz: kein KI-spezifisches Gesetz; massgebend sind revDSG (u. a. DSFA), Bankkundengeheimnis und FINMA-Erwartungen an Governance und Risikomanagement beim KI-Einsatz. Vernehmlassungsvorlage zur Umsetzung der Europarats-KI-Konvention ist erst für Ende 2026 angekündigt.
-  · EU AI Act: nicht direkt anwendbar (rein interner Einsatz in der Schweiz, kein EU-Bezug). Freiwillige Orientierung: «begrenztes Risiko» – der Bot entscheidet nicht über Personen, Kredite oder Anstellungen, sondern liefert Kontext. Daraus übernehmen wir die Transparenzpflicht nach Art. 50 (gilt in der EU seit 2.8.2026): klar erkennbar, dass es eine KI ist, und KI-generierte Antworten werden gekennzeichnet.
-  · Begleitmodus in Meetings: Mitarbeitende werden informiert (Personalkommission, MP-05), keine Emotions- oder Leistungsauswertung.
+    - Schweiz: kein KI-spezifisches Gesetz; massgebend sind revDSG (u. a. DSFA), Bankkundengeheimnis und FINMA-Erwartungen an Governance und Risikomanagement beim KI-Einsatz. Vernehmlassungsvorlage zur Umsetzung der Europarats-KI-Konvention ist erst für Ende 2026 angekündigt.
+    - EU AI Act: nicht direkt anwendbar (rein interner Einsatz in der Schweiz, kein EU-Bezug). Freiwillige Orientierung: «begrenztes Risiko» – der Bot entscheidet nicht über Personen, Kredite oder Anstellungen, sondern liefert Kontext. Daraus übernehmen wir die Transparenzpflicht nach Art. 50 (gilt in der EU seit 2.8.2026): klar erkennbar, dass es eine KI ist, und KI-generierte Antworten werden gekennzeichnet.
+    - Begleitmodus in Meetings: Mitarbeitende werden informiert (Personalkommission, MP-05), keine Emotions- oder Leistungsauswertung.
 
 ### 12. Kosten & Aufwand
-PoC (LNW, Nov.–Dez. 2026): effektiv CHF 0 – Vercel, GitHub, Vektordatenbank und LLM im Gratis-Kontingent; Aufwand Team 3 × 70 Std.
+
+PoC (LNW, Nov.–Dez. 2026): effektiv ca. CHF 16 – Prepaid-Guthaben Gemini API (bezahlte Stufe); Vercel, GitHub und Vektordatenbank im Gratis-Kontingent; Aufwand Team 3 × 70 Std.
 
 Simulierter Budgetantrag an die Geschäftsleitung (fiktiv, alle Werte Annahmen):
 - PoC: interne Aufwände 210 Std. × CHF 100 = CHF 21'000
@@ -165,11 +177,12 @@ Nutzen (konservativ): 400 MA × 1 Std./Woche × 45 Wochen × CHF 100 = CHF 1,8 M
 Details: Budgetplan im Repository
 
 ### 13. Technische Umsetzung
+
 Entscheid Make-or-Buy für den PoC: MAKE – eigene Web-App, entwickelt mit KI-Unterstützung (Claude Code)
 - Frontend & API: Next.js, gehostet auf Vercel; Code auf GitHub
 - Zugang: passwortgeschützt (einfacher Schutz genügt, da ausschliesslich gemockte Daten der fiktiven Gletscherbank)
 - Wissensbasis: 60 Dokumente → Chunking → Embeddings → Open-Source-Vektordatenbank PostgreSQL + pgvector (Kernbestandteil der Lösung); Suche kombiniert semantisch + Volltext, Metadaten (Owner, Version, Klassifikation) pro Chunk
-- LLM: kostenloser API-Zugang (Free Tier) für den PoC; Anbieterwahl beim Bau
+- LLM: Google Gemini API (bezahlte Stufe, Prepaid) – Embedding: gemini-embedding-2; Antworten: gemini-3.5-flash-lite (Instant/Basic), gemini-3.5-flash (Full); Details docs/modellwahl.md
 - Antwortlogik: Detailstufe (INSTANT/BASIC/FULL), Quellenangaben, Konfidenz-Ampel
 
 Etappen:
@@ -182,6 +195,7 @@ Details: Architekturskizze im Repository.
 ## Verweise & Notizen
 
 ### 14. Verweise im Repository
+
 - /data/Wissensdatenbank_Payment/ – 60 Quelldokumente der Gletscherbank AG
 - /data/Wissensdatenbank_Payment/Schnittstellen/ – IF-01 bis IF-03 (WRICEF, camt.054, OpenAPI)
 - /data/Wissensdatenbank_Payment/Meetings/MP-05 – Projektsteuerung KI-Wissensassistent (Entscheide E1–E5)
@@ -194,6 +208,7 @@ Details: Architekturskizze im Repository.
 - /app/ – Code der Web-App (Next.js, Vercel)
 
 ### 15. Notizen / offene Fragen
+
 Pitch-Rahmen: Projektteam der Gletscherbank präsentiert der Geschäftsleitung den PoC und beantragt den Pilot (Go/No-Go Rollout Ende März 2027, MP-05). Ausblick: Lösung als Produkt für weitere Banken (Option).
 
 Ablauf 15 Min. (je 5 Min. pro Person):
