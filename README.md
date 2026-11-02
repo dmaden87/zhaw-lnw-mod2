@@ -11,7 +11,7 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 
 | Ordner | Inhalt |
 | --- | --- |
-| [`app/`](app/) | Web-App (Next.js), Deploy über Vercel, passwortgeschützt |
+| [`app/`](app/) | Web-App (Next.js), Deploy über Vercel, passwortgeschützt (Login-Seite) |
 | [`db/`](db/) | Datenbankschema (PostgreSQL + pgvector) und Import-Skripte |
 | [`data/`](data/) | Wissensdatenbank Zahlungsverkehr der Gletscherbank (60 Dokumente inkl. Schnittstellen) |
 | [`docs/`](docs/) | AI-Canvas, Project Charter, Projektplan, Risiken, Budget, Folien |
