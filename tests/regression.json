@@ -161,7 +161,7 @@
         "yellow"
       ],
       "weiterweg": true,
-      "hinweis": "Banking-Frage ohne Dokument: mit Allgemeinwissen Gelb und gekennzeichnet, aber kein erfundener Zinssatz der Gletscherbank",
+      "hinweis": "Bankinterner Wert fehlt: klar sagen, dass die Wissensbasis nichts enthält; kein erfundener Zinssatz",
       "must_not_contain": [
         "%"
       ]
@@ -181,14 +181,14 @@
     {
       "id": "R13",
       "kategorie": "Allgemeinwissen",
-      "frage": "Was ist der Unterschied zwischen pacs.008 und pain.001?",
-      "level": "basic",
+      "frage": "Was ist ein Lombardkredit?",
+      "level": "instant",
       "expect_docs": [],
       "lights": [
-        "green",
         "yellow"
       ],
-      "hinweis": "Bei eingeschaltetem Allgemeinwissen gekennzeichnet und höchstens Gelb"
+      "hinweis": "Banking-Allgemeinwissen, nicht in der Wissensbasis: gekennzeichnet, höchstens Gelb (bei ausgeschaltetem Schalter Rot)",
+      "expect_scope": "general"
     },
     {
       "id": "S01",
