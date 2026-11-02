@@ -17,6 +17,7 @@ Chronologie der wichtigsten Arbeiten und Entscheide. Neueste Einträge oben.
 | | Wechsel auf bezahlte Gemini-Stufe (Prepaid CHF 16) | Gratis-Limit 100 Embeddings/Min. bremste Import und Tests; bezahlte Stufe nutzt Eingaben nicht fürs Training |
 | Mittag | Design-Konzept 1 «Swiss corporate» umgesetzt (Navy-Seitenleiste, Stufen-Pills, Antwortkarte, Quellenkarten), Handy-Ansicht mit Kopfleiste; neue Seite «Wissensbasis» | Zwei Konzepte verglichen; Konzept 1 gewählt, weil Quellen und Kontext sichtbar bleiben – wichtig für Vertrauen |
 | | Alle drei Stufen werden pro Frage parallel erzeugt, Umschalten ohne Wartezeit; Quellen öffnen das Dokument im neuen Tab beim zitierten Kapitel (neue Dokumentansicht, auch aus der Wissensbasis verlinkt) | Wunsch Team: im Meeting mit Instant starten und ohne erneutes Fragen vertiefen; Quellen sofort prüfbar |
+| Nachmittag | Wissensbasis-Verwaltung: Upload (Word, PDF, Markdown, Text), aktivieren/inaktivieren, öffnen im neuen Tab; Knopf «Verlauf löschen» im Briefing | Wunsch Team: Wissensbasis ohne Entwickler aktuell halten; Inaktivieren statt Löschen, damit nichts verloren geht |
 | | Vercel Web Analytics eingebunden | Nutzung messbar machen (KPI «Nutzungsrate» im Canvas) |
 | | Chat mit Stufen, kombinierter Suche, Konfidenz-Ampel, Quellen und Vorschlägen live | Beta v0.5; erste Testfragen siehe `docs/loesungsdokumentation.md` |
 

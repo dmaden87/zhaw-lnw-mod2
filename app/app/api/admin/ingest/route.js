@@ -4,6 +4,7 @@
 // ?step=stats   -> Übersicht
 import { createHash } from 'node:crypto';
 import knowledge from '../../../../data/chunks.json';
+import fulltexts from '../../../../data/documents.json';
 import { db, toVector } from '../../../../lib/db';
 import { embed } from '../../../../lib/gemini';
 import { config } from '../../../../lib/config';
@@ -24,6 +25,11 @@ const SCHEMA = [
      tsv tsvector GENERATED ALWAYS AS (to_tsvector('german', coalesce(section, '') || ' ' || content)) STORED)`,
   'CREATE INDEX IF NOT EXISTS chunks_embedding_idx ON chunks USING hnsw (embedding vector_cosine_ops)',
   'CREATE INDEX IF NOT EXISTS chunks_tsv_idx ON chunks USING gin (tsv)',
+  // Erweiterung Wissensbasis-Verwaltung: Volltext, aktiv/inaktiv, Herkunft (repo | upload)
+  'ALTER TABLE documents ADD COLUMN IF NOT EXISTS markdown text',
+  'ALTER TABLE documents ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true',
+  "ALTER TABLE documents ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'repo'",
+  'ALTER TABLE documents ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now()',
 ];
 
 const hashOf = (c) => createHash('sha256').update(`${config.embedModel}|${c.embed_text}`).digest('hex').slice(0, 16);
@@ -49,13 +55,14 @@ export async function GET(request) {
       const limit = Math.min(Number(p.get('limit') || 100), 100);
       for (const d of knowledge.documents) {
         await sql.query(
-          `INSERT INTO documents (id, title, category, owner, version, classification, path)
-           VALUES ($1,$2,$3,$4,$5,$6,$7)
-           ON CONFLICT (id) DO UPDATE SET title=$2, category=$3, owner=$4, version=$5, classification=$6, path=$7`,
-          [d.id, d.title, d.category, d.owner, d.version, d.classification, d.path]);
+          `INSERT INTO documents (id, title, category, owner, version, classification, path, markdown, source)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'repo')
+           ON CONFLICT (id) DO UPDATE SET title=$2, category=$3, owner=$4, version=$5, classification=$6, path=$7, markdown=$8`,
+          [d.id, d.title, d.category, d.owner, d.version, d.classification, d.path, fulltexts[d.id]?.markdown || null]);
       }
       const maxId = knowledge.chunks.length;
-      await sql.query('DELETE FROM chunks WHERE id > $1', [maxId]);
+      // Nur Repository-Abschnitte (IDs < 100000) aufräumen; hochgeladene Dokumente bleiben unberührt
+      await sql.query('DELETE FROM chunks WHERE id > $1 AND id < 100000', [maxId]);
       const existing = new Map((await sql.query('SELECT id, hash FROM chunks WHERE embedding IS NOT NULL'))
         .map((r) => [r.id, r.hash]));
       const todo = knowledge.chunks.filter((c) => existing.get(c.id) !== hashOf(c));

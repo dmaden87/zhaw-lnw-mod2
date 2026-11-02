@@ -70,6 +70,8 @@ Gemessene Antwortzeit gesamt: **1,5–2,5 s** (Ziel Instant < 5 s erfüllt).
 
 **Schnittstellen-Dokumente:** Weil die ursprüngliche Wissensbasis kaum technische Schnittstellen enthielt, wurden drei ergänzt: IF-01 PayHub ↔ ScreenGuard (WRICEF, REST/JSON), IF-02 camt.054 (ISO 20022 XML) und IF-03 Payment Initiation API (OpenAPI/YAML).
 
+**Upload in der App** (`/api/documents`): Umwandlung mit mammoth (Word) bzw. unpdf (PDF), Aufteilung mit derselben Logik wie `build_chunks.py`, Abschnitts-IDs ab 100'000, Herkunft `upload`. Hochgeladene Dokumente liegen nur in der Datenbank, nicht im Repository.
+
 **Import** (`/api/admin/ingest`): legt Tabellen und Indizes an und bettet Abschnitte in Paketen von 100 ein. Nur neue oder geänderte Abschnitte werden neu berechnet (Hash-Vergleich). Datenbankschema: [`db/schema.sql`](../db/schema.sql).
 
 ## 4. Konfidenz-Ampel
@@ -116,7 +118,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Code ändern | Commit auf `main` → Vercel deployt automatisch (ca. 1–2 Min.) |
 | Wissensbasis ändern | Dokument in `data/` ersetzen → `python3 db/build_chunks.py` → committen → nach Deploy `/api/admin/ingest?step=data` aufrufen, bis `remaining` 0 ist |
 | Modell wechseln | Umgebungsvariable `EMBED_MODEL`, `GEN_MODEL_FAST`, `GEN_MODEL_FULL` oder `GEN_MODEL_FALLBACK` in Vercel setzen und neu deployen (Achtung: neues Embedding-Modell erfordert Neu-Import) |
-| Wissensbasis einsehen | Seite «Wissensbasis» in der App listet alle Dokumente mit Kategorie, Owner und Stand |
+| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar. Im PoC darf jede angemeldete Person das; im Pilot nur Wissens-Owner. |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
 | Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
 | Kosten prüfen | Google AI Studio → Nutzung; Vercel und Neon im Dashboard |

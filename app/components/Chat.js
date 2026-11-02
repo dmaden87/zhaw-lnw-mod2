@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { IconSearch, IconArrowRight } from '@tabler/icons-react';
+import { IconSearch, IconArrowRight, IconTrash } from '@tabler/icons-react';
 import { docHref } from '../lib/slug';
 
 const LEVELS = [
@@ -84,6 +84,15 @@ export default function Chat() {
               </button>
             ))}
           </div>
+        </div>
+      )}
+
+      {items.length > 0 && (
+        <div className="history-bar">
+          <span className="label" style={{ margin: 0 }}>{items.length === 1 ? '1 Frage' : `${items.length} Fragen`} in dieser Sitzung</span>
+          <button type="button" className="btn-clear" onClick={() => { setItems([]); setError(''); inputRef.current?.focus(); }}>
+            <IconTrash size={15} stroke={1.8} aria-hidden="true" />Verlauf löschen
+          </button>
         </div>
       )}
 

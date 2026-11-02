@@ -11,12 +11,16 @@ CREATE TABLE IF NOT EXISTS documents (
   owner          text,               -- Prozesseigner / Verantwortlich
   version        text,               -- Version / Stand
   classification text,               -- Intern, Vertraulich
-  path           text                -- Ablage im Repository
+  path           text,               -- Ablage im Repository bzw. «Upload: Dateiname»
+  markdown       text,               -- Volltext für die Dokumentansicht
+  active         boolean NOT NULL DEFAULT true,   -- inaktive Dokumente werden nicht durchsucht
+  source         text NOT NULL DEFAULT 'repo',    -- repo | upload
+  updated_at     timestamptz NOT NULL DEFAULT now()
 );
 
 -- Ein Eintrag pro Abschnitt (Chunk) mit Embedding
 CREATE TABLE IF NOT EXISTS chunks (
-  id         integer PRIMARY KEY,
+  id         integer PRIMARY KEY,    -- Repository: 1..n, Uploads: ab 100000
   doc_id     text NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
   section    text,                   -- Kapitelüberschrift
   part       integer,                -- Teil innerhalb des Kapitels
