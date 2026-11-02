@@ -1,7 +1,7 @@
 // Signierte Sitzung im Cookie (HMAC-SHA256). Läuft im Proxy und in den API-Routen.
 export const SESSION_COOKIE = 'session';
-export const ROLES = { user: 1, superuser: 2, kipm: 3 };
-export const ROLE_LABEL = { user: 'User', superuser: 'Super-User', kipm: 'KI-PM' };
+export const ROLES = { user: 1, superuser: 2, kipm: 3, admin: 4 };
+export const ROLE_LABEL = { user: 'User', superuser: 'Super-User', kipm: 'KI-PM', admin: 'Admin' };
 const MAX_AGE = 60 * 60 * 12; // 12 Stunden
 
 const enc = new TextEncoder();

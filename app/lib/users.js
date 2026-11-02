@@ -15,8 +15,9 @@ export function checkPassword(pw, stored) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-// Notfall-/Start-Zugang: Benutzer «admin» mit dem DEMO_PASSWORD ist immer KI-PM
-export const BOOTSTRAP = { id: 0, username: 'admin', display_name: 'Admin (Demo)', role: 'kipm' };
+// Admin-Zugang: Benutzer «admin» mit ADMIN_PASSWORD (Vercel) – darf alles inkl. Benutzerverwaltung
+export const BOOTSTRAP = { id: 0, username: 'admin', display_name: 'Admin', role: 'admin' };
+export const ASSIGNABLE = ['user', 'superuser', 'kipm'];
 
 // Prüft Sitzung und Mindestrolle; bei echten Benutzern zusätzlich, ob sie noch aktiv sind und welche Rolle sie aktuell haben
 export async function requireRole(request, minRole) {

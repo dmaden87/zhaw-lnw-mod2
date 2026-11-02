@@ -7,7 +7,7 @@ import { useMe } from '../lib/useMe';
 const ROLES = [
   { key: 'user', label: 'User', hint: 'Suchen, Dokumente lesen' },
   { key: 'superuser', label: 'Super-User', hint: '+ Dokumente hochladen, ersetzen, aktivieren' },
-  { key: 'kipm', label: 'KI-PM', hint: '+ Antworten bewerten, Wissen ergänzen, Benutzer verwalten' },
+  { key: 'kipm', label: 'KI-PM', hint: '+ Antworten bewerten und verfeinern, Wissen ergänzen (Testing-Modus)' },
 ];
 const fmt = (d) => (d ? new Date(d).toLocaleString('de-CH', { dateStyle: 'short', timeStyle: 'short' }) : '–');
 
@@ -40,7 +40,7 @@ export default function UserAdmin() {
   return (
     <div>
       <div className="kb-bar" style={{ justifyContent: 'space-between' }}>
-        <span className="src-meta" style={{ alignSelf: 'center' }}>{users.filter((u) => u.active).length} aktive Benutzer · Start-Zugang «admin» mit dem Demo-Passwort ist immer KI-PM</span>
+        <span className="src-meta" style={{ alignSelf: 'center' }}>{users.filter((u) => u.active).length} aktive Benutzer · Benutzer «admin» (Rolle Admin) verwaltet die Benutzer und darf alles</span>
         <button type="button" className="btn-primary" onClick={() => setShowNew((v) => !v)} aria-expanded={showNew}>
           <IconUserPlus size={16} stroke={1.8} style={{ verticalAlign: -3, marginRight: 6 }} aria-hidden="true" />Benutzer anlegen
         </button>
@@ -83,6 +83,7 @@ export default function UserAdmin() {
       <div className="card" style={{ marginTop: 16 }}>
         <p className="label" style={{ margin: '0 0 6px' }}>Rollen</p>
         {ROLES.map((r) => <p key={r.key} style={{ margin: '0 0 4px', fontSize: 14 }}><strong>{r.label}:</strong> {r.hint}</p>)}
+        <p style={{ margin: 0, fontSize: 14 }}><strong>Admin:</strong> alles inkl. Benutzerverwaltung (nur der Benutzer «admin»)</p>
       </div>
     </div>
   );

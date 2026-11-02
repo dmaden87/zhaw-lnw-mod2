@@ -12,7 +12,7 @@ const NAV = [
 export default function Shell({ children }) {
   const path = usePathname();
   const me = useMe();
-  const nav = atLeast(me, 'kipm') ? [...NAV, { href: '/benutzer', label: 'Benutzer', Icon: IconUsers }] : NAV;
+  const nav = atLeast(me, 'admin') ? [...NAV, { href: '/benutzer', label: 'Benutzer', Icon: IconUsers }] : NAV;
   return (
     <div className="shell">
       <aside className="side">

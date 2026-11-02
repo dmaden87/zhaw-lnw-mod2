@@ -105,8 +105,8 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 
 | Thema | Umsetzung PoC | Im Pilot |
 | --- | --- | --- |
-| Zugang | Benutzer mit Rollen (User, Super-User, KI-PM), signierte Sitzung (HMAC, `SESSION_SECRET`) | Single Sign-On, Rollen aus dem Verzeichnis der Bank |
-| Zugangsdaten | Nur als geschützte Umgebungsvariablen in Vercel (`DEMO_PASSWORD`, `SESSION_SECRET`, `DATABASE_URL`, `GEMINI_API_KEY`, `ADMIN_TOKEN`), nie im Repository | Secret-Management der Bank |
+| Zugang | Benutzer mit Rollen (User, Super-User, KI-PM, Admin), signierte Sitzung (HMAC, `SESSION_SECRET`) | Single Sign-On, Rollen aus dem Verzeichnis der Bank |
+| Zugangsdaten | Nur als geschützte Umgebungsvariablen in Vercel (`DEMO_PASSWORD`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `DATABASE_URL`, `GEMINI_API_KEY`, `ADMIN_TOKEN`), nie im Repository | Secret-Management der Bank |
 | Admin-Funktionen | `/api/admin/*` nur mit `ADMIN_TOKEN` | entfernt bzw. intern |
 | Daten | ausschliesslich fiktive Daten der Gletscherbank | Freigegebene Dokumente nach Berechtigungs-Audit (MP-05, Gate 1) |
 | KI-Anbieter | Gemini API, bezahlte Stufe: Eingaben werden nicht fürs Training genutzt | Vertrag mit Datenverarbeitung CH/EU, DSFA |
@@ -119,10 +119,11 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | --- | --- |
 | User | Fragen stellen, Antworten und Quellen sehen, Dokumente lesen |
 | Super-User | zusätzlich Dokumente hochladen, ersetzen, aktivieren und inaktivieren |
-| KI-PM | zusätzlich Testing- und Adjustment-Modus (Antworten bewerten, Wissen ergänzen) und Benutzer verwalten |
+| KI-PM | zusätzlich Testing- und Adjustment-Modus (Antworten bewerten und verfeinern, Wissen ergänzen) |
+| Admin | alles, zusätzlich Benutzer verwalten – nur der Benutzer `admin` |
 
-- **Benutzerverwaltung:** Seite «Benutzer» (nur KI-PM): anlegen, Rolle ändern, sperren/entsperren, Passwort ändern. Passwörter gespeichert als scrypt-Hash, nie im Klartext.
-- **Start-Zugang:** Benutzername `admin` mit dem `DEMO_PASSWORD` ist immer KI-PM – zum Einrichten und als Notfallzugang.
+- **Benutzerverwaltung:** Seite «Benutzer» (nur Admin): anlegen, Rolle ändern, sperren/entsperren, Passwort ändern. Passwörter gespeichert als scrypt-Hash, nie im Klartext.
+- **Admin-Zugang:** Benutzername `admin`, Passwort als `ADMIN_PASSWORD` in Vercel hinterlegt (nicht im Repository). Weitere Benutzer erhalten die Rollen User, Super-User oder KI-PM.
 - **Durchsetzung:** Jede API prüft die Rolle serverseitig und bei echten Benutzern zusätzlich, ob sie noch aktiv sind; die Oberfläche blendet nicht erlaubte Funktionen nur aus.
 - **Nachvollziehbarkeit:** Hochladen, Ersetzen, Aktivieren und Bewertungen speichern den Benutzernamen (`updated_by`, `rated_by`).
 - **Pilot:** Rollen aus dem Single Sign-On der Bank übernehmen statt eigener Benutzerverwaltung.

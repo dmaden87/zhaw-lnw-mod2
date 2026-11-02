@@ -11,4 +11,5 @@ export function useMe() {
   }, []);
   return me;
 }
-export const atLeast = (me, role) => Boolean(me) && ({ user: 1, superuser: 2, kipm: 3 })[me.role] >= ({ user: 1, superuser: 2, kipm: 3 })[role];
+const RANK = { user: 1, superuser: 2, kipm: 3, admin: 4 };
+export const atLeast = (me, role) => Boolean(me) && RANK[me.role] >= RANK[role];

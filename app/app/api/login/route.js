@@ -13,7 +13,8 @@ export async function POST(request) {
 
   let user = null;
   if (username === 'admin') {
-    if (process.env.DEMO_PASSWORD && password === process.env.DEMO_PASSWORD) user = BOOTSTRAP;
+    const adminPw = process.env.ADMIN_PASSWORD || process.env.DEMO_PASSWORD;
+    if (adminPw && password === adminPw) user = BOOTSTRAP;
   } else {
     try {
       const [row] = await db().query('SELECT id, username, display_name, role, active, password_hash FROM users WHERE username = $1', [username]);

@@ -7,7 +7,7 @@ export default function Benutzer() {
   return (
     <Shell>
       <h1 className="page-title">Benutzer</h1>
-      <p className="page-sub">Wer darf was? User suchen und lesen · Super-User verwalten zusätzlich Dokumente · KI-PM bewerten Antworten, ergänzen Wissen und verwalten Benutzer.</p>
+      <p className="page-sub">Wer darf was? User suchen und lesen · Super-User verwalten zusätzlich Dokumente · KI-PM bewerten Antworten und ergänzen Wissen · Admin verwaltet zusätzlich die Benutzer.</p>
       <UserAdmin />
     </Shell>
   );
