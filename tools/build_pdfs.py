@@ -71,3 +71,4 @@ if __name__ == "__main__":
 if __name__ == '__main__':
     import runpy
     runpy.run_path(str(ROOT / 'tools' / 'canvas_pdf.py'), run_name='__main__')
+    runpy.run_path(str(ROOT / 'tools' / 'features_pdf.py'), run_name='__main__')

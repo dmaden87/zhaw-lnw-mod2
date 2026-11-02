@@ -7,6 +7,7 @@ PDF-Versionen aller Markdown-Unterlagen liegen in [`pdf/`](pdf/) (neu erzeugen m
 | [AI-Canvas (HTML zum Ausfüllen)](AI-Canvas.html) · [Markdown](AI-Canvas.md) · [PDF gestaltet: Canvas-Übersicht + Details](pdf/AI-Canvas.pdf) | v0.3, 02.11.2026 | Team |
 | [Lösungsdokumentation Beta v0.5](loesungsdokumentation.md) ([PDF](pdf/loesungsdokumentation.pdf)) – Architektur, Ablauf, Ampel, Sicherheit, Schutzmechanismen, Rollen, Betrieb, Tests | 02.11.2026 | Deniz |
 | [Testkonzept und Testautomatisierung](testkonzept.md) ([PDF](pdf/testkonzept.pdf)) – Testebenen, Ausführen, Referenzfragen, Ergebnisse | 02.11.2026 | Deniz, JJ |
+| [Feature-Übersicht (PDF, 1 Seite)](pdf/feature-uebersicht.pdf) – alle Funktionen der Web-App, Rollen, Technik | 02.11.2026 | Deniz |
 | [Erkenntnisse](erkenntnisse.md) ([PDF](pdf/erkenntnisse.pdf)) – Produkt, KI-Technik, Sicherheit, Testen, Arbeiten mit KI; Grundlage für die Reflexion | 02.11.2026 | Team |
 | [Deklaration KI-Einsatz](ki-einsatz.md) ([PDF](pdf/ki-einsatz.pdf)) – Claude Opus 5.5: wer hat was gemacht | 02.11.2026 | Deniz |
 | [Projektjournal](journal.md) ([PDF](pdf/journal.pdf)) | laufend | Team |
