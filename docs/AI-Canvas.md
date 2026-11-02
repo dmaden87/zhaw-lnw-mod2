@@ -92,7 +92,7 @@ Verantwortung: Der Mensch entscheidet; der Bot liefert Kontext, keine Entscheidu
 - Vor dem Meeting: BASIC/FULL als Vorbereitung.
 - Nach dem Meeting: FULL statt eigener Nachrecherche; Quelle öffnen, wo nötig.
 - Briefing mit Kolleg:innen teilen → gemeinsame Wissensbasis im Team.
-- Zugang PoC: Web-App (passwortgeschützt); Zielbild: native Windows-Anwendung, diskret während Meetings per Tastenkürzel aufrufbar.
+- Zugang PoC: Web-App mit Login und Rollen; Zielbild: native Windows-Anwendung, diskret während Meetings per Tastenkürzel aufrufbar.
 
 ### 7. Outcome & KPIs
 
