@@ -1,0 +1,16 @@
+{
+  "name": "briefing-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Briefing-Bot der Gletscherbank AG (fiktiv) – PoC für den LNW 2, CAS ZHAW",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^16.4.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}
