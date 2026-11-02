@@ -157,8 +157,8 @@
       "level": "instant",
       "expect_docs": [],
       "lights": [
-        "red",
-        "yellow"
+        "yellow",
+        "red"
       ],
       "weiterweg": true,
       "hinweis": "Bankinterner Wert fehlt: klar sagen, dass die Wissensbasis nichts enthält; kein erfundener Zinssatz",

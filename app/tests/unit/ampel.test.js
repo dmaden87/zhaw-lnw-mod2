@@ -100,7 +100,8 @@ describe('Allgemeinwissen (Feature-Toggle)', () => {
   it('Antwort aus Allgemeinwissen ist höchstens Gelb (75), auch bei sehr sicherem Modell', () => {
     expect(traffic(95, 0.9, false, true)).toMatchObject({ value: 75, light: 'yellow' });
   });
-  it('und wird nicht wegen schwacher Suchtreffer automatisch Rot', () => {
+  it('und wird nicht wegen schwacher Suchtreffer oder tiefer Selbsteinschätzung Rot (immer Gelb, gekennzeichnet)', () => {
     expect(traffic(80, 0.4, false, true)).toMatchObject({ value: 75, light: 'yellow' });
+    expect(traffic(40, 0.4, false, true)).toMatchObject({ value: 60, light: 'yellow' });
   });
 });
