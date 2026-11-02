@@ -29,6 +29,7 @@ Nicht zu verwechseln mit der **KI im Produkt**: Der Briefing-Bot selbst nutzt Go
 | Programmierung | Anforderungen, Abnahme in der laufenden App, Testbenutzer | gesamter Code (Next.js-App, Datenbank, Import, Suche, Ampel, Rollen, Tests), Konfiguration von Vercel |
 | Infrastruktur | Konten (GitHub, Vercel, Neon, Google), Freigaben, Zugangsdaten und Budget | Einrichtung über die freigegebenen Schnittstellen |
 | Dokumentation | Review, Korrekturen | Lösungsdokumentation, Journal, Modellwahl, Testkonzept, PDFs |
+| Sicherheit | Anstoss und Entscheide: Schutz vor Manipulation, Urteilen und Prompt-Abfrage; Allgemeinwissen als Schalter; Protokoll nur als Zähler | Vorschlag der 5 Schichten, Umsetzung, Red-Team-Tests |
 | Testing | **fachliches Testing durch JJ** (Testkatalog, Bewertungen im Testing-Modus), Auswertung mit Peri | automatisierte Tests (Unit, API, Live-Regression) |
 | Präsentation und Reflexion | Inhalt, Auftritt, Reflexion zu Modul 2 | allenfalls Entwürfe, gekennzeichnet |
 
@@ -41,4 +42,4 @@ Nicht zu verwechseln mit der **KI im Produkt**: Der Briefing-Bot selbst nutzt Go
 
 ## 4. Erkenntnis für die Reflexion
 
-Mit einem KI-Assistenten konnte ein Team ohne Vollzeit-Entwickler in zwei Tagen einen funktionsfähigen Prototyp mit Tests bauen. Der Engpass verschiebt sich dadurch vom Programmieren zu drei Aufgaben: klare Anforderungen formulieren, Entscheide treffen und Ergebnisse prüfen. Genau das ist der Inhalt unserer Rollen als Projektleiterin, Product Manager und Tech Lead.
+Ausführlicher in [erkenntnisse.md](erkenntnisse.md), Kapitel 5. Kurz: Mit einem KI-Assistenten konnte ein Team ohne Vollzeit-Entwickler in zwei Tagen einen funktionsfähigen Prototyp mit Tests bauen. Der Engpass verschiebt sich dadurch vom Programmieren zu drei Aufgaben: klare Anforderungen formulieren, Entscheide treffen und Ergebnisse prüfen. Genau das ist der Inhalt unserer Rollen als Projektleiterin, Product Manager und Tech Lead.

@@ -12,7 +12,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 OUT = DOCS / "pdf"
-FILES = ["loesungsdokumentation.md", "testkonzept.md", "ki-einsatz.md", "journal.md", "modellwahl.md", "AI-Canvas.md"]
+FILES = ["loesungsdokumentation.md", "testkonzept.md", "ki-einsatz.md", "erkenntnisse.md", "journal.md", "modellwahl.md", "AI-Canvas.md"]
 
 CSS = """
 @page { size: A4; margin: 18mm 16mm 20mm 16mm; }

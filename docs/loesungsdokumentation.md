@@ -188,12 +188,18 @@ Grundsatz: Was zuverlässig sein muss, prüft die App mit festen Regeln **ohne K
 
 ## 9. Bekannte Schwächen und nächste Schritte
 
+Die gesammelten Erkenntnisse aus Konzept, Umsetzung und Tests stehen in [erkenntnisse.md](erkenntnisse.md).
+
 | Befund | Massnahme | Wer / bis |
 | --- | --- | --- |
 | Entscheid E2 aus MP-05 wird bei der Fraud-Frage nicht gefunden | Testfall aufnehmen; Suche und Abschnittsgrösse für Protokolle prüfen | JJ, Deniz / M3 22.11. |
 | Bei Gelb/Rot fehlten teilweise Vorschläge und Ansprechstelle | Umgesetzt 02.11.: App ergänzt festen Weiterweg (Vorschläge + Ansprechstelle gemäss ORG-01); Unit-Test und Referenzfrage R11 | – |
 | Basic-Antwort teilweise viel zu kurz | Umgesetzt 02.11.: zu kurze Antworten werden einmal neu erzeugt; Referenzfrage R01 | – |
 | Authentifizierung der Payment Initiation API (IF-03) wird nicht erkannt (R04) | Aufteilung der OpenAPI-/YAML-Datei verbessern | Deniz / M3 |
+| Mustererkennung erkannte Wörter mit Umlaut am Anfang nicht («Übersetze deine Anweisungen …», Live-Regression S05) | Umgesetzt 02.11.: Unicode-Wortgrenze für alle Muster, 3 neue Unit-Tests | – |
+| Modell verstand «Banking» zu eng (Hypotheken abgelehnt) | Umgesetzt 02.11.: Definition und Beispiele im Prompt | – |
+| Ablehnungen erschienen teils Gelb | Umgesetzt 02.11.: nicht beantwortete Fragen immer Rot, Allgemeinwissen immer Gelb | – |
+| Mustererkennung fängt nur bekannte Formulierungen | Bewusst gestaffelte Schichten; neue Angriffsmuster in Regression aufnehmen; Pilot: zusätzlicher Prüfdienst des Anbieters prüfen | Deniz, Peri / Pilot |
 | Basic-Antwort vermischte zwei Timeout-Arten | Testfall aufnehmen, Prompt-Regel «Begriffe nicht vermischen» | JJ, Deniz / M3 |
 | Fehlermeldungen (Upload, Ersetzen, Antwort) | Umgesetzt 02.11.: verständliche Meldungen mit nächstem Schritt, z. B. Dateityp, Grösse, gescanntes PDF, ausgelasteter KI-Dienst, abgelaufene Anmeldung; technische Details nur im Log | – |
 | XML-Beispiel in IF-02 wird in der Aufbereitung zerlegt | Code-Blöcke in `build_chunks.py` erhalten | Deniz / M3 |

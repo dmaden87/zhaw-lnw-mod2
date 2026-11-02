@@ -6,7 +6,7 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 
 **Team:** Peri (Projektleiterin, Risk & Compliance) · JJ (Product Manager, Fachexperte Zahlungsverkehr) · Deniz (Tech Lead)
 **Präsentation:** 4. Dezember 2026
-**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Testkonzept](docs/testkonzept.md) · [Projektjournal](docs/journal.md)
+**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Testkonzept](docs/testkonzept.md) · [Erkenntnisse](docs/erkenntnisse.md) · [Projektjournal](docs/journal.md)
 
 [![Tests](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml/badge.svg)](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml)
 
@@ -19,7 +19,7 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 | [`app/`](app/) | Web-App (Next.js), Deploy über Vercel, Login mit Rollen; automatisierte Tests in `app/tests/` |
 | [`db/`](db/) | Datenbankschema (PostgreSQL + pgvector) und Import-Skripte |
 | [`data/`](data/) | Wissensdatenbank Zahlungsverkehr der Gletscherbank (60 Dokumente inkl. Schnittstellen) |
-| [`docs/`](docs/) | AI-Canvas, Lösungsdokumentation, Testkonzept, Deklaration KI-Einsatz, Journal (+ PDFs) |
+| [`docs/`](docs/) | AI-Canvas, Lösungsdokumentation, Testkonzept, Erkenntnisse, Deklaration KI-Einsatz, Journal (+ PDFs) |
 | [`tests/`](tests/) | Referenzfragen für die Live-Regression, fachlicher Testkatalog (JJ) |
 | [`.github/`](.github/workflows/tests.yml) | GitHub Actions: Tests bei jedem Push, Live-Regression werktags |
 
