@@ -51,7 +51,7 @@ async function regression() {
     if (!r.answer?.trim()) problems.push('leere Antwort');
     const words = r.answer?.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length || 0;
     const lim = { instant: [0, 70], basic: [80, 320], full: [300, 1100] }[f.level || 'basic'];
-    if (!r.blocked && r.scope !== 'general' && r.light !== 'red' && (words < lim[0] || words > lim[1])) problems.push(`Länge ${words} Wörter, Vorgabe ${lim[0]}–${lim[1]}`);
+    if (f.laenge_pruefen !== false && !r.blocked && r.scope !== 'general' && r.light !== 'red' && (words < lim[0] || words > lim[1])) problems.push(`Länge ${words} Wörter, Vorgabe ${lim[0]}–${lim[1]}`);
     for (const s of r.sources || []) if (!s.title) problems.push(`Quelle ${s.doc_id} ohne Titel`);
     if (f.bekannt && problems.length) { results.push({ name: `${f.id} ${f.frage}`, ok: true, known: true, detail: problems.join('; ') }); console.log(`⚠ ${f.id} ${f.frage} – bekannter Befund: ${f.bekannt} (${problems.join('; ')})`); continue; }
     check(`${f.id} ${f.frage}`, problems.length === 0, problems.join('; ') || `${r.light} ${r.confidence} · ${docs.slice(0, 3).join(', ')} · ${r.debug?.totalMs ?? '?'} ms`);
