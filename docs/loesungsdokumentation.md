@@ -118,7 +118,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Code ändern | Commit auf `main` → Vercel deployt automatisch (ca. 1–2 Min.) |
 | Wissensbasis ändern | Dokument in `data/` ersetzen → `python3 db/build_chunks.py` → committen → nach Deploy `/api/admin/ingest?step=data` aufrufen, bis `remaining` 0 ist |
 | Modell wechseln | Umgebungsvariable `EMBED_MODEL`, `GEN_MODEL_FAST`, `GEN_MODEL_FULL` oder `GEN_MODEL_FALLBACK` in Vercel setzen und neu deployen (Achtung: neues Embedding-Modell erfordert Neu-Import) |
-| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar. Im PoC darf jede angemeldete Person das; im Pilot nur Wissens-Owner. |
+| Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Im PoC darf jede angemeldete Person das; im Pilot nur Wissens-Owner. |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
 | Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
 | Kosten prüfen | Google AI Studio → Nutzung; Vercel und Neon im Dashboard |
@@ -139,6 +139,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Entscheid E2 aus MP-05 wird bei der Fraud-Frage nicht gefunden | Testfall aufnehmen; Suche und Abschnittsgrösse für Protokolle prüfen | JJ, Deniz / M3 22.11. |
 | Bei Gelb fehlen teilweise die Vorschläge | Prompt-Regel schärfen | Deniz / M3 |
 | Basic-Antwort vermischte zwei Timeout-Arten | Testfall aufnehmen, Prompt-Regel «Begriffe nicht vermischen» | JJ, Deniz / M3 |
+| Fehlermeldungen (Upload, Ersetzen, Antwort) | Umgesetzt 02.11.: verständliche Meldungen mit nächstem Schritt, z. B. Dateityp, Grösse, gescanntes PDF, ausgelasteter KI-Dienst, abgelaufene Anmeldung; technische Details nur im Log | – |
 | XML-Beispiel in IF-02 wird in der Aufbereitung zerlegt | Code-Blöcke in `build_chunks.py` erhalten | Deniz / M3 |
 | Ampel-Schwellen sind Startwerte | Kalibrierung mit Testset (30 Fragen) | Peri, JJ / M4 29.11. |
 | 15 Dokumente ohne Owner im Kopf (Leitfäden, Transkripte, 2 Produktblätter) | Owner ergänzen vor Freeze | JJ / M2 14.11. |

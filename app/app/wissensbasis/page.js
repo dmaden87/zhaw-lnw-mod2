@@ -10,7 +10,7 @@ export default async function Wissensbasis() {
   let error = '';
   try {
     docs = await db().query(
-      `SELECT d.id, d.title, d.category, d.owner, d.version, d.classification, d.active, d.source, count(c.id)::int AS chunks
+      `SELECT d.id, d.title, d.category, d.owner, d.version, d.classification, d.active, d.source, d.path, count(c.id)::int AS chunks
          FROM documents d LEFT JOIN chunks c ON c.doc_id = d.id
         GROUP BY d.id ORDER BY d.source DESC, d.category, d.id`);
   } catch {

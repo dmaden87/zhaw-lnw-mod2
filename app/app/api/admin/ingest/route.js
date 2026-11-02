@@ -53,7 +53,8 @@ export async function GET(request) {
 
     if (step === 'data') {
       const limit = Math.min(Number(p.get('limit') || 100), 100);
-      for (const d of knowledge.documents) {
+      const overridden = new Set((await sql.query("SELECT id FROM documents WHERE source <> 'repo'")).map((r) => r.id));
+      for (const d of knowledge.documents.filter((x) => !overridden.has(x.id))) {
         await sql.query(
           `INSERT INTO documents (id, title, category, owner, version, classification, path, markdown, source)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'repo')
@@ -63,9 +64,11 @@ export async function GET(request) {
       const maxId = knowledge.chunks.length;
       // Nur Repository-Abschnitte (IDs < 100000) aufräumen; hochgeladene Dokumente bleiben unberührt
       await sql.query('DELETE FROM chunks WHERE id > $1 AND id < 100000', [maxId]);
+      // Repository-Abschnitte von ersetzten Dokumenten entfernen (die neue Fassung liegt ab ID 100000)
+      if (overridden.size) await sql.query('DELETE FROM chunks WHERE id < 100000 AND doc_id = ANY($1)', [[...overridden]]);
       const existing = new Map((await sql.query('SELECT id, hash FROM chunks WHERE embedding IS NOT NULL'))
         .map((r) => [r.id, r.hash]));
-      const todo = knowledge.chunks.filter((c) => existing.get(c.id) !== hashOf(c));
+      const todo = knowledge.chunks.filter((c) => !overridden.has(c.doc_id) && existing.get(c.id) !== hashOf(c));
       const batch = todo.slice(0, limit);
       if (batch.length) {
         const titles = new Map(knowledge.documents.map((d) => [d.id, d.title]));

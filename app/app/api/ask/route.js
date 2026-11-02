@@ -11,7 +11,10 @@ export async function POST(request) {
     delete result.debug;
     return Response.json(result);
   } catch (e) {
-    console.error(e);
-    return Response.json({ error: 'Die Antwort konnte nicht erzeugt werden. Bitte nochmals versuchen.' }, { status: 502 });
+    console.error('[ask]', e);
+    const busy = /429|503|overloaded|high demand/i.test(String(e.message));
+    return Response.json({ error: busy
+      ? 'Der KI-Dienst ist gerade ausgelastet. Versuche es in einer Minute nochmals.'
+      : 'Die Antwort konnte nicht erzeugt werden. Versuche es nochmals; falls es wieder passiert, melde dich beim Tech Lead.' }, { status: busy ? 503 : 502 });
   }
 }

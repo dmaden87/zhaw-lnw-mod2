@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { IconSearch, IconArrowRight, IconTrash } from '@tabler/icons-react';
 import { docHref } from '../lib/slug';
+import { requestJson } from '../lib/clientFetch';
 
 const LEVELS = [
   { key: 'instant', label: 'Instant', hint: '5–10 Sek.' },
@@ -41,9 +42,7 @@ export default function Chat() {
     setQuestion('');
     LEVELS.forEach(async ({ key }) => {
       try {
-        const res = await fetch('/api/ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: text, level: key }) });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Die Antwort konnte nicht erzeugt werden.');
+        const data = await requestJson('/api/ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: text, level: key }) });
         update(id, key, { status: 'done', data, seconds: fmt(Date.now() - t0) });
       } catch (e) {
         update(id, key, { status: 'fail', error: e.message });
