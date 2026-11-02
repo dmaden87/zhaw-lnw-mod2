@@ -57,7 +57,7 @@ async function generate(model, prompt, thinking) {
 }
 
 // Ampel: Selbsteinschätzung des Modells, begrenzt durch die Qualität der Suchtreffer.
-function traffic(llmConfidence, topScore, hasContradiction) {
+export function traffic(llmConfidence, topScore, hasContradiction) {
   let cap = topScore >= 0.72 ? 100 : topScore >= 0.62 ? 84 : 59;
   if (hasContradiction) cap = Math.min(cap, 84);
   const value = Math.max(0, Math.min(llmConfidence ?? 0, cap));
@@ -67,7 +67,7 @@ function traffic(llmConfidence, topScore, hasContradiction) {
 // Kalibrierung durch Testbewertungen einer sehr ähnlichen Frage:
 // falsch → höchstens 55 % (Rot), teilweise → höchstens 75 % (Gelb), richtig → +5 Punkte (innerhalb der Suchgrenze).
 // Wurde zur falschen/teilweisen Antwort ergänzendes Wissen erfasst und jetzt gefunden, entfällt die Abwertung.
-function calibrate(amp, rated, hits) {
+export function calibrate(amp, rated, hits) {
   if (!rated) return '';
   const fixed = rated.correction_doc_id && hits.some((h) => h.doc_id === rated.correction_doc_id);
   if (rated.verdict === 'falsch' && !fixed) amp.value = Math.min(amp.value, 55);
@@ -78,6 +78,26 @@ function calibrate(amp, rated, hits) {
   return fixed
     ? `Kalibriert: Eine ähnliche Frage wurde im Test ${what} bewertet; die dazu erfasste Ergänzung ${rated.correction_doc_id} ist berücksichtigt.`
     : `Kalibriert: Eine ähnliche Frage wurde im Test ${what} bewertet.`;
+}
+
+// Mindestlänge je Stufe (Wörter). Zu kurze Antworten werden einmal neu erzeugt, aber nur bei ausreichender Datenlage.
+export const MIN_WORDS = { instant: 0, basic: 80, full: 300 };
+export const wordCount = (text = '') => String(text).split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+export function tooShort(levelKey, text, confidence) {
+  return (confidence ?? 0) >= 60 && wordCount(text) < (MIN_WORDS[levelKey] || 0);
+}
+
+// Nie eine Sackgasse: Gelb/Rot ohne Vorschläge und Ansprechstelle bekommt einen festen Weiterweg.
+export const FALLBACK_SUGGESTIONS = [
+  'Wie läuft eine Instant Payment in CHF ab?',
+  'Welche Sofortmassnahmen gelten bei Betrugsverdacht?',
+  'Bis wann wird LSV+ abgelöst?',
+];
+export const FALLBACK_CONTACT = 'Zuständige Einheit gemäss Organigramm (ORG-01); im Zweifel Payment Operations, intern 4410';
+export function wayForward(out) {
+  if (out.light === 'green') return { ...out, suggestions: [], contact: '' };
+  const suggestions = out.suggestions?.length ? out.suggestions : FALLBACK_SUGGESTIONS;
+  return { ...out, suggestions, contact: out.contact?.trim() ? out.contact : FALLBACK_CONTACT };
 }
 
 export async function answer(question, levelKey = 'basic') {
@@ -100,6 +120,14 @@ export async function answer(question, levelKey = 'basic') {
     model = config.fallbackModel;
     result = await generate(model, prompt);
   }
+  let retried = false;
+  if (tooShort(levelKey, result.answer, result.confidence)) {
+    retried = true;
+    try {
+      const again = await generate(model, `${prompt}\n\nHINWEIS: Ein erster Entwurf war mit ${wordCount(result.answer)} Wörtern zu kurz. Halte die Längenvorgabe der Stufe ein.`, level.thinking);
+      if (wordCount(again.answer) > wordCount(result.answer)) result = again;
+    } catch { /* erste Antwort behalten */ }
+  }
   const topScore = hits.length ? Math.max(...hits.map((h) => h.score)) : 0;
   const amp = traffic(result.confidence, topScore, Boolean(result.contradictions && result.contradictions.trim()));
   const calibration = calibrate(amp, rated, hits);
@@ -110,16 +138,16 @@ export async function answer(question, levelKey = 'basic') {
     .map((s) => ({ ...s, title: docs.get(s.doc_id)?.title, owner: docs.get(s.doc_id)?.owner, version: docs.get(s.doc_id)?.version }))
     .filter((s) => s.title);
 
-  return {
+  return wayForward({
     question, level: levelKey, model,
     answer: result.answer,
     confidence: amp.value, light: amp.light,
     confidence_reason: calibration ? `${result.confidence_reason} ${calibration}` : result.confidence_reason,
     contradictions: result.contradictions || '',
-    suggestions: amp.light === 'green' ? [] : (result.suggestions || []).slice(0, 3),
-    contact: amp.light === 'green' ? '' : (result.contact || ''),
+    suggestions: (result.suggestions || []).slice(0, 3),
+    contact: result.contact || '',
     sources,
-    debug: { llmConfidence: result.confidence, topScore, cap: amp.cap, rated, calibration, retrievalMs: t1 - t0, totalMs: Date.now() - t0,
+    debug: { llmConfidence: result.confidence, topScore, cap: amp.cap, rated, calibration, retried, words: wordCount(result.answer), retrievalMs: t1 - t0, totalMs: Date.now() - t0,
       hits: hits.map((h) => ({ doc_id: h.doc_id, section: h.section, score: h.score, rrf: Number(h.rrf.toFixed(4)) })) },
-  };
+  });
 }

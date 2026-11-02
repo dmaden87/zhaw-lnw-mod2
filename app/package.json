@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:live": "node tests/live/run.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -20,5 +23,8 @@
     "remark-gfm": "^4.0.1",
     "turndown": "^7.2.4",
     "unpdf": "^1.9.1"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
   }
 }

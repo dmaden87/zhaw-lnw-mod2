@@ -1,0 +1,177 @@
+{
+  "_hinweis": "Referenzfragen für den automatischen Regressionstest (app/tests/live/run.mjs). JJ ergänzt hier den fachlichen Testkatalog. expect_docs: mindestens eine dieser Quellen muss genannt sein. lights: erlaubte Ampelfarben. must_contain: Begriffe (Gross-/Kleinschreibung egal), die in der Antwort vorkommen müssen. weiterweg: bei Gelb/Rot müssen Vorschläge oder eine Ansprechstelle kommen. bekannt: dokumentierter Befund, wird gemeldet, lässt den Lauf aber nicht scheitern. Längen: Instant ≤70, Basic 80–320, Full 300–1100 Wörter (ausser bei Rot).",
+  "fragen": [
+    {
+      "id": "R01",
+      "kategorie": "Prozess",
+      "frage": "Wie läuft eine Instant Payment in CHF ab?",
+      "level": "basic",
+      "expect_docs": [
+        "PAY-02",
+        "PB-02"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R02",
+      "kategorie": "Schnittstelle",
+      "frage": "Welches Timeout gilt beim Echtzeit-Screening zwischen PayHub und ScreenGuard?",
+      "level": "basic",
+      "expect_docs": [
+        "IF-01"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ],
+      "must_contain": [
+        "ScreenGuard"
+      ]
+    },
+    {
+      "id": "R03",
+      "kategorie": "Schnittstelle",
+      "frage": "Was enthält die camt.054 Gutschriftsanzeige für Firmenkunden?",
+      "level": "basic",
+      "expect_docs": [
+        "IF-02",
+        "AA-05"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R04",
+      "kategorie": "Schnittstelle",
+      "frage": "Wie authentifiziert man sich an der PayHub Payment Initiation API?",
+      "level": "instant",
+      "expect_docs": [
+        "IF-03"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ],
+      "bekannt": "IF-03 (OpenAPI/YAML): Authentifizierung steht im Dokument, wird aber als nicht beschrieben beantwortet – Aufteilung der YAML-Datei verbessern (Backlog)"
+    },
+    {
+      "id": "R05",
+      "kategorie": "Fach",
+      "frage": "Bis wann wird LSV+ abgelöst?",
+      "level": "instant",
+      "expect_docs": [
+        "PAY-07",
+        "MP-02",
+        "TR-02"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ],
+      "must_contain": [
+        "2028"
+      ]
+    },
+    {
+      "id": "R06",
+      "kategorie": "Prozess",
+      "frage": "Was mache ich bei einem Sanktionsalarm Level 1?",
+      "level": "basic",
+      "expect_docs": [
+        "AA-03",
+        "PAY-08",
+        "LF-03"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R07",
+      "kategorie": "Prozess",
+      "frage": "Welche Sofortmassnahmen gelten bei Betrugsverdacht?",
+      "level": "basic",
+      "expect_docs": [
+        "AA-04",
+        "PAY-10",
+        "LF-02"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R08",
+      "kategorie": "Fach",
+      "frage": "Was kostet eine SEPA-Überweisung für Privatkunden?",
+      "level": "instant",
+      "expect_docs": [
+        "PB-01",
+        "PB-03"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R09",
+      "kategorie": "Compliance",
+      "frage": "Wann muss eine Verdachtsmeldung an die MROS gemacht werden?",
+      "level": "basic",
+      "expect_docs": [
+        "COM-02",
+        "WE-01",
+        "LF-06"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R10",
+      "kategorie": "Organisation",
+      "frage": "Wer ist für PayHub zuständig?",
+      "level": "instant",
+      "expect_docs": [
+        "ORG-01",
+        "SH-01"
+      ],
+      "lights": [
+        "green",
+        "yellow"
+      ]
+    },
+    {
+      "id": "R11",
+      "kategorie": "Grenzfall",
+      "frage": "Wie hoch ist der Hypothekarzins für Neukunden?",
+      "level": "instant",
+      "expect_docs": [],
+      "lights": [
+        "red",
+        "yellow"
+      ],
+      "weiterweg": true
+    },
+    {
+      "id": "R12",
+      "kategorie": "Grenzfall",
+      "frage": "Wer hat die Fussball-WM 2026 gewonnen?",
+      "level": "instant",
+      "expect_docs": [],
+      "lights": [
+        "red"
+      ],
+      "weiterweg": true
+    }
+  ]
+}

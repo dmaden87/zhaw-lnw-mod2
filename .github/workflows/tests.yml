@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Ziel für die Live-Tests'
+        default: 'https://zhaw-lnw-mod2.vercel.app'
+  schedule:
+    - cron: '17 5 * * 1-5'   # werktags 06:17 MEZ: Live-Regression gegen Produktion
+
+jobs:
+  unit:
+    name: Unit- und API-Tests + Build
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: app } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env: { NEXT_TELEMETRY_DISABLED: 1 }
+
+  live:
+    name: Live-Smoke und Regression (Produktion)
+    needs: unit
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: app } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Auf neues Deployment warten (nur nach Push)
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: Live-Tests
+        env:
+          BASE_URL: ${{ inputs.base_url || 'https://zhaw-lnw-mod2.vercel.app' }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          OUT: live-bericht.json
+        run: |
+          if [ -z "$ADMIN_TOKEN" ]; then echo "::warning::Secret ADMIN_TOKEN fehlt – Live-Tests übersprungen"; exit 0; fi
+          npm run test:live
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: live-bericht, path: app/live-bericht.json, if-no-files-found: ignore }
