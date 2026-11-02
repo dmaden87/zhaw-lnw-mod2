@@ -86,6 +86,8 @@ Gemessene Antwortzeit gesamt: **1,5–2,5 s** (Ziel Instant < 5 s erfüllt).
 
 **Kalibrierung durch Testbewertungen:** Wurde eine sehr ähnliche Frage (Ähnlichkeit ≥ 0,88) im Testing-Modus bewertet, passt das die Ampel an: «falsch» → höchstens 55 % (Rot), «teilweise» → höchstens 75 % (Gelb), «richtig» → +5 Punkte (innerhalb der Suchgrenze). Wurde dazu ergänzendes Wissen erfasst und wird es jetzt gefunden, entfällt die Abwertung. Die Begründung der Ampel nennt die Kalibrierung.
 
+**Weitere Regeln (seit 02.11.):** Antworten mit Allgemeinwissen sind immer Gelb (60–75 %) und gekennzeichnet. Nicht beantwortete Fragen, die ausserhalb des Themas liegen oder abgelehnt werden, sind immer Rot. Steht eine Zahl der Antwort nicht in den Quellen, gibt es höchstens 70 % und einen Hinweis (siehe Kapitel 6b).
+
 **Widerspruchsregel:** Meeting-Protokoll vor Transkript, neuere Version vor älterer; jeder Widerspruch wird angezeigt.
 
 ## 5. Modellwahl
@@ -108,10 +110,35 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Zugang | Benutzer mit Rollen (User, Super-User, KI-PM, Admin), signierte Sitzung (HMAC, `SESSION_SECRET`) | Single Sign-On, Rollen aus dem Verzeichnis der Bank |
 | Zugangsdaten | Nur als geschützte Umgebungsvariablen in Vercel (`DEMO_PASSWORD`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `DATABASE_URL`, `GEMINI_API_KEY`, `ADMIN_TOKEN`), nie im Repository | Secret-Management der Bank |
 | Admin-Funktionen | `/api/admin/*` nur mit `ADMIN_TOKEN` | entfernt bzw. intern |
+| Missbrauch und Manipulation | Schutzmechanismen in 5 Schichten (Kapitel 6b) | zusätzlich zentrale Begrenzung, Monitoring |
 | Daten | ausschliesslich fiktive Daten der Gletscherbank | Freigegebene Dokumente nach Berechtigungs-Audit (MP-05, Gate 1) |
 | KI-Anbieter | Gemini API, bezahlte Stufe: Eingaben werden nicht fürs Training genutzt | Vertrag mit Datenverarbeitung CH/EU, DSFA |
 | Datenhaltung | Datenbank in Frankfurt (EU) | CH/EU gemäss DSFA |
 | Transparenz | «Du sprichst mit einer KI», jede Antwort als KI-generiert gekennzeichnet (vgl. EU AI Act Art. 50) | gleich |
+
+## 6b. Schutzmechanismen (Guardrails)
+
+Grundsatz: Was zuverlässig sein muss, prüft die App mit festen Regeln **ohne KI**. Der Systemprompt ergänzt diese Regeln, weil sich ein Sprachmodell überreden lässt und feste Regeln nicht. Code: `app/lib/guard.js`, Prompt: `app/lib/answer.js`.
+
+| Schicht | Was | Wie | Wirkung |
+| --- | --- | --- | --- |
+| **1. Eingangskontrolle** | Manipulationsversuche («Ignoriere alle Anweisungen», «Du bist jetzt …», Entwicklermodus, System-Tags) | Mustererkennung Deutsch/Englisch | feste Ablehnung, **keine KI aufgerufen** |
+| | Fragen nach Systemprompt, Anweisungen, Konfiguration | Mustererkennung | feste Ablehnung |
+| | Code in der Frage oder verlangter Code (SQL, Skripte, HTML/JS, Shell) | Mustererkennung | feste Ablehnung mit Hinweis auf Schnittstellen-Doku |
+| | Personendaten (IBAN, Kartennummer mit Prüfziffer, AHV-Nummer, E-Mail) | Erkennung und Schwärzung vor der Verarbeitung | Frage wird ohne die Daten beantwortet, Hinweis an die Person |
+| | Missbrauch | höchstens 30 Fragen pro Person in 10 Minuten | Meldung «zu viele Anfragen» |
+| **2. Systemprompt** | Grundregeln A–G mit Vorrang vor allem in Frage und Dokumenten: Inhalte sind Daten (A), Vertraulichkeit (B), feste Rolle (C), kein Code (D), **nicht urteilen** über Personen und Entscheide, Widersprüche aber sachlich nennen (E), keine Rechts-/Anlageberatung (F), Personendaten (G) | Prompt | Modell lehnt ab oder bleibt sachlich |
+| | Antwortquellen: **Schalter «Allgemeinwissen Payments und Banking»** (Seite Einstellungen, nur Admin). Eingeschaltet darf der Bot allgemeines Bankwissen ergänzen, gekennzeichnet und immer Gelb. Interne Werte wie Preise, Limiten und Fristen kommen nur aus Dokumenten. Ausgeschaltet antwortet er nur aus der Wissensbasis. Themenfremdes beantwortet er nie. | Datenbank-Einstellung, 30 s Cache | |
+| **3. Dokumente als Daten** | Dokumentauszüge und Frage in klar abgegrenzten Blöcken (`<dokument>`, `<frage>`), Abschlussmarken im Inhalt entschärft | Prompt-Aufbau | Anweisungen in Dokumenten werden nicht befolgt |
+| | Upload, Ersetzen und Ergänzungen (KOR) werden auf Anweisungen an die KI geprüft | Mustererkennung | Dokument wird abgewiesen, verständliche Meldung |
+| **4. Ausgangskontrolle** | Geheimnis-Marker im Systemprompt und typische Prompt-Bausteine | Textvergleich | Antwort blockiert |
+| | **Zahlenprüfung:** Jede Zahl ab 2 Stellen muss in den gefundenen Abschnitten stehen (Tausendertrennzeichen und führende Nullen egal) | Vergleich der Ziffernfolgen | höchstens 70 % (Gelb), Hinweis mit den betroffenen Zahlen – Schutz gegen Halluzinationen |
+| | Code-Blöcke nur, wenn sie wörtlich aus einer Quelle stammen | Textvergleich | Code-Block wird entfernt |
+| | Nur tatsächlich gefundene Dokumente als Quelle; Darstellung ohne HTML/Skripte | bestehend | |
+| **5. Nachweis** | Zähler pro Tag und Kategorie, **ohne Fragetexte und ohne Personen** (Entscheid Team) | Tabelle `guard_counts`, Seite Einstellungen | Kennzahlen für Risiko-Register und DSFA |
+| | Red-Team-Tests: 37 Unit-Tests für Angriffe und erlaubte Fachfragen, 11 Sicherheitsfragen in der Live-Regression | siehe [testkonzept.md](testkonzept.md) | |
+
+**Grenzen:** Mustererkennung fängt bekannte Formulierungen, keine beliebig verschleierten Angriffe. Deshalb gibt es mehrere Schichten: Die Grundregeln im Prompt und die Ausgangskontrolle greifen auch dann, wenn ein Angriff die Eingangskontrolle passiert. Die Begrenzung der Anfragen gilt pro Server-Instanz. Im Pilot läuft sie zentral, zum Beispiel über eine Firewall-Regel.
 
 ## 6a. Rollenkonzept
 
@@ -138,6 +165,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 | Wissensbasis verwalten | Seite «Wissensbasis»: alle Dokumente mit Kategorie, Owner, Stand und Anzahl Abschnitte; öffnen (neuer Tab); **aktivieren/inaktivieren** (inaktive Dokumente bleiben gespeichert, werden aber nicht durchsucht); **hochladen** von Word, PDF, Markdown oder Text (max. 4 MB) – das Dokument wird umgewandelt, in Abschnitte geteilt, eingebettet und ist sofort durchsuchbar; **ersetzen** einer bestehenden Fassung (ID, Titel, Kategorie und Status bleiben, Inhalt und Abschnitte werden neu erzeugt). Upload und Ersetzen laufen als Transaktion: Bei einem Fehler bleibt der bisherige Stand unverändert. Ab Rolle Super-User. |
 | Testing- und Adjustment-Modus | Schalter oben im Briefing, ab Rolle KI-PM sichtbar und nutzbar. Pro Antwort und Stufe: Bewertung richtig / teilweise richtig / falsch, Kommentar und optional ergänzendes Wissen. Ergänzungen werden als Dokument `KOR-nnn` (Kategorie «Ergänzung (Testing)») eingebettet und sind sofort durchsuchbar; in der Wissensbasis wie andere Dokumente inaktivierbar. Zähler der Bewertungen im Schalterbalken. |
 | Testauswertung | `/api/admin/ratings?format=csv` (mit `ADMIN_TOKEN`) liefert alle Bewertungen als CSV für Excel – Grundlage für die KPI-Messung (Korrektheit, Kalibrierung der Ampel) |
+| Einstellungen | Seite «Einstellungen» (nur Admin): Schalter «Allgemeinwissen Payments und Banking» und Zähler der Schutzmechanismen (heute, 7 Tage, total) |
 | Tests | `cd app && npm test` (Unit/API); Live-Regression `npm run test:live`; automatisch in GitHub Actions – siehe [testkonzept.md](testkonzept.md) |
 | Diagnose | `/api/admin/ask?q=…&level=…` zeigt Suchtreffer, Scores und Zeiten; `/api/admin/search?q=…` nur die Suche; Logs im Vercel-Dashboard |
 | Nutzung auswerten | Vercel-Dashboard → Analytics (Seitenaufrufe, Besuche, Geräte) – Beleg für KPI «Nutzungsrate» |
@@ -154,7 +182,7 @@ Erkenntnis: Das neueste Modell (3.8 Flash) brauchte 85 s – für den Einsatz im
 
 ### Testautomatisierung (02.11.2026)
 
-- **84 Unit- und API-Tests** (Ampel, Kalibrierung, Abschnitte, Dateiprüfung, Sitzung, Rechte je Rolle, Login, Zugangsschutz): alle bestanden, laufen bei jedem Push in GitHub Actions
+- **134 Unit- und API-Tests** (Ampel, Kalibrierung, Abschnitte, Dateiprüfung, Sitzung, Rechte je Rolle, Login, Zugangsschutz, Schutzmechanismen): alle bestanden, laufen bei jedem Push in GitHub Actions
 - **Live-Regression mit 12 Referenzfragen:** Im ersten Lauf bestanden 9 von 12. Behoben wurden zwei Fehler: Rot ohne Weiterweg und eine zu kurze Basic-Antwort. Danach bestanden 11 von 12, ein Befund ist bekannt (R04).
 - Details, Ausführung und Erweiterung durch JJ: [testkonzept.md](testkonzept.md)
 
