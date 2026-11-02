@@ -10,6 +10,7 @@ const users = await import('../../app/api/users/route');
 const userById = await import('../../app/api/users/[id]/route');
 const ratings = await import('../../app/api/ratings/route');
 const docs = await import('../../app/api/documents/route');
+const settings = await import('../../app/api/settings/route');
 
 // Erste DB-Abfrage in requireRole liefert den angemeldeten Benutzer
 const als = (role, extra) => query.mockResolvedValueOnce([dbUser(role, extra)]);
@@ -105,5 +106,20 @@ describe('Testing-Modus und Wissensbasis', () => {
     als('user');
     const r = await docs.POST(await req('/api/documents', { method: 'POST', user: dbUser('user'), body: {} }));
     expect(r.status).toBe(403);
+  });
+});
+
+describe('Einstellungen (Allgemeinwissen-Schalter) nur für Admin', () => {
+  it.each(['user', 'superuser', 'kipm'])('%s darf den Schalter nicht ändern', async (role) => {
+    als(role);
+    const r = await settings.PATCH(await req('/api/settings', { method: 'PATCH', user: dbUser(role), body: { general_knowledge: false } }));
+    expect(r.status).toBe(403);
+  });
+  it('Admin schaltet um; ungültiger Wert wird abgelehnt', async () => {
+    expect((await settings.PATCH(await req('/api/settings', { method: 'PATCH', user: ADMIN, body: { general_knowledge: 'ja' } }))).status).toBe(400);
+    query.mockResolvedValue([]);
+    const r = await settings.PATCH(await req('/api/settings', { method: 'PATCH', user: ADMIN, body: { general_knowledge: false } }));
+    expect(r.status).toBe(200);
+    expect(query.mock.calls[0][1]).toEqual(['general_knowledge', 'false', 'admin']);
   });
 });

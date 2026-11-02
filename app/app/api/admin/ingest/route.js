@@ -46,6 +46,11 @@ const SCHEMA = [
      role text NOT NULL CHECK (role IN ('user','superuser','kipm')), password_hash text NOT NULL,
      active boolean NOT NULL DEFAULT true, created_at timestamptz NOT NULL DEFAULT now(),
      created_by text, last_login timestamptz)`,
+  // Schutzmechanismen: Zähler pro Tag und Kategorie (keine Fragetexte), Einstellungen (Feature-Toggles)
+  `CREATE TABLE IF NOT EXISTS guard_counts (
+     day date NOT NULL, category text NOT NULL, count integer NOT NULL DEFAULT 0, PRIMARY KEY (day, category))`,
+  `CREATE TABLE IF NOT EXISTS settings (
+     key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now(), updated_by text)`,
 ];
 
 const hashOf = (c) => createHash('sha256').update(`${config.embedModel}|${c.embed_text}`).digest('hex').slice(0, 16);

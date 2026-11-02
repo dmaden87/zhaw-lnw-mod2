@@ -4,6 +4,7 @@ import { embed } from './gemini';
 import { config } from './config';
 import { toMarkdown } from './convert';
 import { chunkMarkdown } from './chunk';
+import { checkDocument, count } from './guard';
 
 export const MAX_BYTES = 4 * 1024 * 1024;
 export const ALLOWED = ['docx', 'pdf', 'md', 'txt'];
@@ -31,6 +32,11 @@ export async function processFile(file, fullTitle) {
 }
 
 export async function processMarkdown(markdown, fullTitle) {
+  const suspicious = checkDocument(markdown);
+  if (suspicious) {
+    await count('upload_blocked');
+    throw new UserError(`Das Dokument enthält eine Formulierung, die wie eine Anweisung an die KI aussieht («${suspicious}»). Aus Sicherheitsgründen wird es nicht übernommen. Entferne die Stelle oder melde dich beim Admin.`, 422);
+  }
   const chunks = chunkMarkdown(markdown).map((c) => ({ ...c, embed_text: `${fullTitle}\nAbschnitt: ${c.section}\n\n${c.content}` }));
   if (chunks.length > 300) throw new UserError(`Das Dokument ist zu umfangreich (${chunks.length} Abschnitte, höchstens 300). Teile es in mehrere Dokumente auf.`, 413);
 

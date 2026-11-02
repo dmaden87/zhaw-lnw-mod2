@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IconMountain, IconMessageQuestion, IconBooks, IconUsers, IconLogout } from '@tabler/icons-react';
+import { IconMountain, IconMessageQuestion, IconBooks, IconUsers, IconSettings, IconLogout } from '@tabler/icons-react';
 import { useMe, atLeast } from '../lib/useMe';
 
 const NAV = [
@@ -12,7 +12,7 @@ const NAV = [
 export default function Shell({ children }) {
   const path = usePathname();
   const me = useMe();
-  const nav = atLeast(me, 'admin') ? [...NAV, { href: '/benutzer', label: 'Benutzer', Icon: IconUsers }] : NAV;
+  const nav = atLeast(me, 'admin') ? [...NAV, { href: '/benutzer', label: 'Benutzer', Icon: IconUsers }, { href: '/einstellungen', label: 'Einstellungen', Icon: IconSettings }] : NAV;
   return (
     <div className="shell">
       <aside className="side">

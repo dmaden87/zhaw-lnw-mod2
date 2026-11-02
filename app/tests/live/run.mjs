@@ -40,6 +40,10 @@ async function regression() {
     } catch (e) { check(`${f.id} ${f.frage}`, false, `Fehler: ${e.message}`); continue; }
     const docs = (r.sources || []).map((s) => s.doc_id);
     const problems = [];
+    if (f.expect_blocked !== undefined && r.blocked !== f.expect_blocked) problems.push(`Schutzregel ${r.blocked || 'keine'}, erwartet ${f.expect_blocked}`);
+    if (f.expect_scope && r.scope !== f.expect_scope) problems.push(`Einordnung ${r.scope}, erwartet ${f.expect_scope}`);
+    for (const w of f.must_not_contain || []) if (r.answer?.toLowerCase().includes(w.toLowerCase())) problems.push(`verbotener Inhalt «${w}»`);
+    if (f.expect_notice && !(r.notices || []).some((n) => n.includes(f.expect_notice))) problems.push(`Hinweis «${f.expect_notice}» fehlt`);
     if (f.expect_docs?.length && !f.expect_docs.some((d) => docs.includes(d))) problems.push(`Quelle fehlt (erwartet ${f.expect_docs.join('/')}, erhalten ${docs.join(', ') || 'keine'})`);
     if (f.lights && !f.lights.includes(r.light)) problems.push(`Ampel ${r.light} (${r.confidence}), erlaubt ${f.lights.join('/')}`);
     for (const w of f.must_contain || []) if (!r.answer?.toLowerCase().includes(w.toLowerCase())) problems.push(`Begriff «${w}» fehlt`);
@@ -47,7 +51,7 @@ async function regression() {
     if (!r.answer?.trim()) problems.push('leere Antwort');
     const words = r.answer?.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length || 0;
     const lim = { instant: [0, 70], basic: [80, 320], full: [300, 1100] }[f.level || 'basic'];
-    if (r.light !== 'red' && (words < lim[0] || words > lim[1])) problems.push(`Länge ${words} Wörter, Vorgabe ${lim[0]}–${lim[1]}`);
+    if (!r.blocked && r.scope !== 'general' && r.light !== 'red' && (words < lim[0] || words > lim[1])) problems.push(`Länge ${words} Wörter, Vorgabe ${lim[0]}–${lim[1]}`);
     for (const s of r.sources || []) if (!s.title) problems.push(`Quelle ${s.doc_id} ohne Titel`);
     if (f.bekannt && problems.length) { results.push({ name: `${f.id} ${f.frage}`, ok: true, known: true, detail: problems.join('; ') }); console.log(`⚠ ${f.id} ${f.frage} – bekannter Befund: ${f.bekannt} (${problems.join('; ')})`); continue; }
     check(`${f.id} ${f.frage}`, problems.length === 0, problems.join('; ') || `${r.light} ${r.confidence} · ${docs.slice(0, 3).join(', ')} · ${r.debug?.totalMs ?? '?'} ms`);

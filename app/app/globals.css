@@ -126,6 +126,9 @@ a.src .src-id::after { content: " ↗"; font-weight: 400; color: var(--muted); }
 .prose th { background: #f1f4f8; }
 .kb-bar { display: flex; gap: 8px; margin: 0 0 14px; }
 .kb-bar input { flex: 1; padding: 9px 12px; font-size: 15px; border: 1px solid var(--line-strong); border-radius: 8px; }
+
+.info { background: #e8eefe; color: #1d3d63; border-radius: 8px; padding: 8px 10px; font-size: 14px; margin-top: 10px; }
+.section-title { font-size: 16px; margin: 22px 0 8px; }
 .note { background: #e8eefe; color: #1d3d63; border-radius: 8px; padding: 8px 12px; font-size: 14px; }
 .tag { display: inline-block; margin-left: 6px; font-size: 11px; background: #e8eefe; color: var(--navy-2); border-radius: 999px; padding: 1px 7px; vertical-align: 1px; }
 .doc-link { color: var(--navy); text-decoration: none; } .doc-link:hover { text-decoration: underline; }

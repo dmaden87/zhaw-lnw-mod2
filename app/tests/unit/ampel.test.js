@@ -95,3 +95,12 @@ describe('tooShort() – Längenvorgabe je Stufe (Befund Regressionstest R01)', 
   it('bei Rot wird nicht nachgebessert (kurze «weiss ich nicht»-Antwort ist richtig)', () => expect(tooShort('basic', satz, 30)).toBe(false));
   it('Basic mit 100 Wörtern ist in Ordnung', () => expect(tooShort('basic', 'wort '.repeat(100), 90)).toBe(false));
 });
+
+describe('Allgemeinwissen (Feature-Toggle)', () => {
+  it('Antwort aus Allgemeinwissen ist höchstens Gelb (75), auch bei sehr sicherem Modell', () => {
+    expect(traffic(95, 0.9, false, true)).toMatchObject({ value: 75, light: 'yellow' });
+  });
+  it('und wird nicht wegen schwacher Suchtreffer automatisch Rot', () => {
+    expect(traffic(80, 0.4, false, true)).toMatchObject({ value: 75, light: 'yellow' });
+  });
+});

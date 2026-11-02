@@ -131,7 +131,7 @@ function Answer({ it, level, setLevel, onAsk, testMode, onRated }) {
           </div>
           {a && (
             <span className={`badge ${a.light}`} title={a.confidence_reason}>
-              <span className="dot" aria-hidden="true" />{LIGHT[a.light]} · {a.confidence} %
+              <span className="dot" aria-hidden="true" />{a.blocked ? 'Abgelehnt' : `${LIGHT[a.light]} · ${a.confidence} %`}
             </span>
           )}
         </div>
@@ -141,6 +141,7 @@ function Answer({ it, level, setLevel, onAsk, testMode, onRated }) {
         {a && (
           <>
             <div className="prose"><ReactMarkdown remarkPlugins={[remarkGfm]}>{a.answer}</ReactMarkdown></div>
+            {a.notices?.map((n) => <div key={n} className="info">{n}</div>)}
             {a.contradictions && <div className="warn"><strong>Widerspruch in den Quellen:</strong> {a.contradictions}</div>}
             {a.light !== 'green' && a.confidence_reason && <p className="reason">Einstufung: {a.confidence_reason}</p>}
             {a.suggestions?.length > 0 && (
@@ -150,7 +151,7 @@ function Answer({ it, level, setLevel, onAsk, testMode, onRated }) {
               </div>
             )}
             {a.contact && <p className="contact"><strong>Ansprechstelle:</strong> {a.contact}</p>}
-            <p className="ai-note">KI-generiert ({a.model}) – Quellen prüfen, bevor du dich darauf stützt.</p>
+            <p className="ai-note">{a.blocked ? 'Antwort einer Schutzregel – keine KI aufgerufen.' : `KI-generiert (${a.model}) – Quellen prüfen, bevor du dich darauf stützt.`}</p>
             {testMode && <RatingPanel key={`${it.id}-${level}`} question={it.question} level={level} data={a} onSaved={onRated} />}
           </>
         )}
