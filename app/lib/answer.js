@@ -175,7 +175,7 @@ export async function answer(rawQuestion, levelKey = 'basic', { countEvents = le
     result = await generate(model, prompt, undefined, system);
   }
   let retried = false;
-  if (tooShort(levelKey, result.answer, result.confidence)) {
+  if (result.scope !== 'out_of_scope' && tooShort(levelKey, result.answer, result.confidence)) {
     retried = true;
     try {
       const again = await generate(model, `${prompt}\n\nHINWEIS: Ein erster Entwurf war mit ${wordCount(result.answer)} Wörtern zu kurz. Halte die Längenvorgabe der Stufe ein.`, level.thinking, system);
@@ -199,6 +199,8 @@ export async function answer(rawQuestion, levelKey = 'basic', { countEvents = le
   const topScore = hits.length ? Math.max(...hits.map((h) => h.score)) : 0;
   const amp = traffic(result.confidence, topScore, Boolean(result.contradictions && result.contradictions.trim()), general);
   const calibration = calibrate(amp, rated, hits);
+  // Nicht beantwortet (ausserhalb Zahlungsverkehr/Banking oder abgelehnt): immer Rot
+  if (result.scope === 'out_of_scope') { amp.value = Math.min(amp.value, 20); amp.light = 'red'; }
 
   let numberNote = '';
   const unknown = general ? [] : unverifiedNumbers(result.answer, `${contextText}\n${question}`);
