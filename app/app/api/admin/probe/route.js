@@ -28,10 +28,13 @@ export async function GET(request) {
     return { model: m, status: r.status, ms: r.ms, dims: r.data?.embedding?.values?.length, error: r.data?.error?.message };
   }));
 
+  const thinking = p.get('thinking'); // z. B. 'minimal' oder 'low'
   const genResults = await Promise.all(gen.map(async (m) => {
-    const r = await call(m, 'generateContent', {
+    const body = {
       contents: [{ role: 'user', parts: [{ text: 'Antworte in einem kurzen Satz auf Deutsch: Was ist ein Instant Payment?' }] }],
-    }, key);
+    };
+    if (thinking) body.generationConfig = { thinkingConfig: { thinkingLevel: thinking } };
+    const r = await call(m, 'generateContent', body, key);
     return {
       model: m, status: r.status, ms: r.ms,
       text: r.data?.candidates?.[0]?.content?.parts?.map((x) => x.text).join('').slice(0, 200),
