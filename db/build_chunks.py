@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "Wissensdatenbank_Payment"
 TEXT_OUT = ROOT / "data" / "text"
 JSON_OUT = ROOT / "app" / "data" / "chunks.json"
+DOCS_OUT = ROOT / "app" / "data" / "documents.json"  # Volltexte für die Dokumentansicht in der App
 MAX_CHARS = 1500
 
 CATEGORY = {
@@ -98,6 +99,7 @@ def process_docx(path: Path, documents: list, chunks: list):
         "path": str(path.relative_to(ROOT)),
     })
     (TEXT_OUT / f"{path.stem}.md").write_text(md, encoding="utf-8")
+    documents[-1]["markdown"] = md
 
     # Kopf (Titelzeilen + Metatabelle) überspringen, dann nach Kapiteln (# ...) teilen
     body = md.split("\n# ", 1)
@@ -125,6 +127,7 @@ def process_yaml(path: Path, documents: list, chunks: list):
         "path": str(path.relative_to(ROOT)),
     })
     (TEXT_OUT / f"{path.stem}.md").write_text(f"```yaml\n{raw}\n```\n", encoding="utf-8")
+    documents[-1]["markdown"] = f"```yaml\n{raw}\n```\n"
     # Teilen an Endpunkten (  /pfad:) und Schemas (    Name:)
     parts = re.split(r"\n(?=  /[^\n]+:\n|    [A-Z][A-Za-z]+:\n)", raw)
     for part in parts:
@@ -147,7 +150,9 @@ def main():
     for n, c in enumerate(chunks, 1):
         c["id"] = n
         c["embed_text"] = f"{titles[c['doc_id']]}\nAbschnitt: {c['section']}\n\n{c['content']}"
-    JSON_OUT.write_text(json.dumps({"documents": documents, "chunks": chunks}, ensure_ascii=False, indent=1), encoding="utf-8")
+    DOCS_OUT.write_text(json.dumps({d["id"]: d for d in documents}, ensure_ascii=False), encoding="utf-8")
+    meta = [{k: v for k, v in d.items() if k != "markdown"} for d in documents]
+    JSON_OUT.write_text(json.dumps({"documents": meta, "chunks": chunks}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(documents)} Dokumente, {len(chunks)} Abschnitte -> {JSON_OUT.relative_to(ROOT)}")
 
 

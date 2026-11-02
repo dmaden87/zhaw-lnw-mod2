@@ -99,3 +99,28 @@ button, textarea, input { font-family: inherit; }
   .card { padding: 14px; }
   .doc-table .hide-m { display: none; }
 }
+
+.doc h2, .doc h3, .doc h4 { scroll-margin-top: 70px; }
+.doc h2 { font-size: 17px; } .doc h3 { font-size: 16px; margin: 18px 0 6px; } .doc h4 { font-size: 15px; }
+.doc :target { background: var(--yellow-bg); border-radius: 6px; padding: 2px 6px; margin-left: -6px; }
+.tw { overflow-x: auto; margin: 0 0 12px; }
+.doc table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.doc th, .doc td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.doc th { background: #f1f4f8; }
+.doc pre { background: #f4f6f9; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+a.src { display: block; text-decoration: none; color: inherit; }
+a.src:hover { border-color: var(--navy); }
+a.src .src-id::after { content: " ↗"; font-weight: 400; color: var(--muted); }
+.doc-table a { text-decoration: none; color: var(--navy); }
+.vtabs { display: flex; gap: 4px; margin: 0 0 10px; }
+.vtab { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+.vtab[aria-pressed="true"] { border-color: var(--navy); color: var(--navy); font-weight: 600; }
+.vtab .st { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
+.vtab .st.done { background: var(--green-dot); } .vtab .st.load { background: var(--yellow-dot); animation: pulse 1s infinite; } .vtab .st.fail { background: var(--red-dot); }
+@keyframes pulse { 50% { opacity: 0.3; } }
+.skeleton { color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.prose table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 0 0 10px; display: block; overflow-x: auto; }
+.prose th, .prose td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.prose th { background: #f1f4f8; }

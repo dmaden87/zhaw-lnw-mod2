@@ -49,11 +49,11 @@ Prinzip: **RAG (Retrieval-Augmented Generation).** Das Sprachmodell wird nicht t
 ## 2. Ablauf einer Frage
 
 1. **Login:** Die App ist durch ein Demo-Passwort geschützt (Cookie, 30 Tage gültig). Zulässig, weil nur fiktive Daten enthalten sind; im Pilot ersetzt durch Single Sign-On.
-2. **Frage und Stufe:** Nutzer wählt Instant (5–10 s Lesezeit), Basic (≤ 3 Min.) oder Full (≤ 15 Min.).
+2. **Frage und Stufe:** Jede Frage erzeugt alle drei Stufen parallel – Instant (5–10 s Lesezeit), Basic (≤ 3 Min.) und Full (≤ 15 Min.). Instant ist meist zuerst bereit; Umschalten zeigt die anderen Stufen ohne neue Wartezeit.
 3. **Suche (ca. 0,4 s):** Die Frage wird eingebettet. Zwei Suchen laufen kombiniert: nach Bedeutung (Vektorähnlichkeit) und nach Stichworten (deutsche Volltextsuche). Die Ranglisten werden per Reciprocal Rank Fusion zusammengeführt; je nach Stufe gehen 6, 8 oder 12 Abschnitte weiter. Zusätzlich immer dabei: «Wen frage ich?» aus dem Organigramm (ORG-01).
 4. **Antwort (ca. 1–2 s):** Das Sprachmodell erhält Regeln (System-Prompt), Stufe, Frage und Abschnitte und liefert ein festes Format: Antwort, Konfidenz mit Begründung, Quellen, Widersprüche, Vorschläge, Ansprechstelle.
 5. **Ampel:** Die Selbsteinschätzung des Modells wird durch die Güte der Suchtreffer begrenzt (siehe Kapitel 4).
-6. **Anzeige (Design-Konzept 1, Desktop und Handy):** Antwort, Ampel, Quellen mit Owner und Stand, bei Gelb/Rot «Meinst du vielleicht …» und Ansprechstelle, Hinweis «KI-generiert – Quellen prüfen».
+6. **Anzeige (Design-Konzept 1, Desktop und Handy):** Quellen sind anklickbar und öffnen das Dokument in einem neuen Tab, direkt beim zitierten Kapitel (hervorgehoben). Dazu Antwort, Ampel, Quellen mit Owner und Stand, bei Gelb/Rot «Meinst du vielleicht …» und Ansprechstelle, Hinweis «KI-generiert – Quellen prüfen».
 
 Gemessene Antwortzeit gesamt: **1,5–2,5 s** (Ziel Instant < 5 s erfüllt).
 

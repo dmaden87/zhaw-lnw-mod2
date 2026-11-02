@@ -1,4 +1,5 @@
 import Shell from '../../components/Shell';
+import Link from 'next/link';
 import { db } from '../../lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -26,8 +27,8 @@ export default async function Wissensbasis() {
           <tbody>
             {docs.map((d) => (
               <tr key={d.id}>
-                <td><strong>{d.id}</strong></td>
-                <td>{d.title.replace(`${d.id} `, '')}</td>
+                <td><Link href={`/dokument/${d.id}`}><strong>{d.id}</strong></Link></td>
+                <td><Link href={`/dokument/${d.id}`}>{d.title.replace(`${d.id} `, '')}</Link></td>
                 <td className="hide-m">{d.category}</td>
                 <td className="hide-m">{d.owner || '–'}</td>
                 <td className="hide-m">{d.version}</td>
