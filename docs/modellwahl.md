@@ -1,6 +1,6 @@
 # Modellwahl (Schritt 2)
 
-**Stand:** 02.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Anbieter:** Google Gemini API, Gratis-Stufe
+**Stand:** 02.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Anbieter:** Google Gemini API, bezahlte Stufe (Prepaid-Guthaben CHF 16, seit 02.11.2026)
 
 ## Entscheid
 
@@ -15,7 +15,7 @@ Alle Modellnamen sind als Umgebungsvariablen konfigurierbar; ein Wechsel braucht
 
 ## Testlauf vom 02.11.2026
 
-Getestet über `/api/admin/probe` mit dem Projektschlüssel (Gratis-Stufe), Frage: «Was ist ein Instant Payment?»
+Getestet über `/api/admin/probe` mit dem Projektschlüssel (damals noch Gratis-Stufe), Frage: «Was ist ein Instant Payment?»
 
 | Modell | Ergebnis | Antwortzeit |
 | --- | --- | --- |
@@ -32,4 +32,5 @@ Getestet über `/api/admin/probe` mit dem Projektschlüssel (Gratis-Stufe), Frag
 
 - **Neuestes Modell ≠ bestes Modell für den Zweck:** Das neueste Flash-Modell lieferte gute Qualität, aber 85 s Wartezeit. Für Instant im Meeting zählt Geschwindigkeit.
 - **Modelle verschwinden:** Ein ein Jahr altes Modell (2.5 Flash) ist bereits abgekündigt. Deshalb konfigurierbare Modellnamen und ein Ausweichmodell.
-- **Gratis-Stufe:** Eingaben dürfen von Google zur Produktverbesserung genutzt werden. Zulässig, weil ausschliesslich fiktive Daten; für den Pilot ist ein bezahlter Zugang mit Datenschutz-Zusicherung vorgesehen (siehe Risiken im AI-Canvas).
+- **Von Gratis- auf bezahlte Stufe (02.11.2026):** Beim ersten Import stiess die Gratis-Stufe an ihre Grenze (100 Embeddings pro Minute). Mit einem Prepaid-Guthaben von CHF 16 entfallen diese Limiten. Zudem nutzt Google Eingaben in der bezahlten Stufe nicht zur Verbesserung seiner Modelle – in der Gratis-Stufe wäre das erlaubt gewesen (für fiktive Daten vertretbar, für echte Daten nicht).
+- **Effektive Kosten PoC:** Guthaben CHF 16 (Verbrauch laufend in Google AI Studio einsehbar); Vercel, Neon und GitHub im Gratis-Kontingent.

@@ -209,7 +209,7 @@ Demo-Datenbasis: Wissensdatenbank Zahlungsverkehr der fiktiven «Gletscherbank A
   { title:"Wie & unter welchen Bedingungen? Umsetzung", cls:"g3", color:"var(--c4)", fields:[
     {id:"risks", t:"Risiken & Gegenmassnahmen", h:"Technische, rechtliche, ethische Risiken – und was wir dagegen tun.",
      v:`- Halluzinationen → Quellenpflicht, Ablehnungsregel, Testset
-- Datenschutz → Datenschutz-Folgenabschätzung (DSFA) vor Pilot; Hosting CH/EU (MP-05)
+- Datenschutz → Datenschutz-Folgenabschätzung (DSFA) vor Pilot; Hosting CH/EU (MP-05); LLM in bezahlter Stufe, d. h. keine Nutzung der Eingaben für Modelltraining durch den Anbieter
 - Zu breite Berechtigungen (offene SharePoint-Sites) → Berechtigungs-Audit als Gate 1 vor Pilotstart (MP-05, E4)
 - Sensible Meetings → keine KI-Begleitung bei Personalfragen, GwG-/Fraud-Fällen und Sanktionstreffern (MP-05, E2; WE-03)
 - Transkripte → Löschung nach 30 Tagen, kein Rohaudio (MP-05, E3)
@@ -223,7 +223,7 @@ Demo-Datenbasis: Wissensdatenbank Zahlungsverkehr der fiktiven «Gletscherbank A
   · EU AI Act: nicht direkt anwendbar (rein interner Einsatz in der Schweiz, kein EU-Bezug). Freiwillige Orientierung: «begrenztes Risiko» – der Bot entscheidet nicht über Personen, Kredite oder Anstellungen, sondern liefert Kontext. Daraus übernehmen wir die Transparenzpflicht nach Art. 50 (gilt in der EU seit 2.8.2026): klar erkennbar, dass es eine KI ist, und KI-generierte Antworten werden gekennzeichnet.
   · Begleitmodus in Meetings: Mitarbeitende werden informiert (Personalkommission, MP-05), keine Emotions- oder Leistungsauswertung.`},
     {id:"costs", t:"Kosten & Aufwand", h:"Prototyp vs. Betrieb: Lizenzen, Hosting, Personal.",
-     v:`PoC (LNW, Nov.–Dez. 2026): effektiv CHF 0 – Vercel, GitHub, Vektordatenbank und LLM im Gratis-Kontingent; Aufwand Team 3 × 70 Std.
+     v:`PoC (LNW, Nov.–Dez. 2026): effektiv ca. CHF 16 – Prepaid-Guthaben Gemini API (bezahlte Stufe); Vercel, GitHub und Vektordatenbank im Gratis-Kontingent; Aufwand Team 3 × 70 Std.
 
 Simulierter Budgetantrag an die Geschäftsleitung (fiktiv, alle Werte Annahmen):
 - PoC: interne Aufwände 210 Std. × CHF 100 = CHF 21'000
@@ -237,7 +237,7 @@ Details: Budgetplan im Repository`},
 - Frontend & API: Next.js, gehostet auf Vercel; Code auf GitHub
 - Zugang: passwortgeschützt (einfacher Schutz genügt, da ausschliesslich gemockte Daten der fiktiven Gletscherbank)
 - Wissensbasis: 60 Dokumente → Chunking → Embeddings → Open-Source-Vektordatenbank PostgreSQL + pgvector (Kernbestandteil der Lösung); Suche kombiniert semantisch + Volltext, Metadaten (Owner, Version, Klassifikation) pro Chunk
-- LLM: kostenloser API-Zugang (Free Tier) für den PoC; Anbieterwahl beim Bau
+- LLM: Google Gemini API (bezahlte Stufe, Prepaid) – Embedding: gemini-embedding-2; Antworten: gemini-3.5-flash-lite (Instant/Basic), gemini-3.5-flash (Full); Details docs/modellwahl.md
 - Antwortlogik: Detailstufe (INSTANT/BASIC/FULL), Quellenangaben, Konfidenz-Ampel
 
 Etappen:
