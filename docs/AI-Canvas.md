@@ -183,7 +183,7 @@ Simulierter Budgetantrag an die Geschäftsleitung (fiktiv, alle Werte Annahmen):
 - Rollout (ab Q2 2027, ca. 400 Mitarbeitende), laufend pro Jahr: LLM/Hosting/Datenbank CHF 15'000 · Betrieb 0,15 FTE CHF 22'500 · Content-Pflege 0,1 FTE CHF 15'000 → ≈ CHF 52'500 p. a.
 
 Nutzen (konservativ): Potenzial 21'000 Std. pro Jahr × CHF 100 = CHF 2,1 Mio. Zeitwert; bei nur 25 % Wirkung 5'250 Std. ≈ CHF 525'000 p. a. → Nettowert über 3 Jahre ≈ CHF 1,25 Mio., Amortisation rund 2 Monate nach Rollout-Start ([Mengengerüst](mengengeruest.md))
-Details: Budgetplan im Repository
+Details: Kosten je Phase und Business Case in [mengengeruest.md](mengengeruest.md)
 
 ### 13. Technische Umsetzung
 
@@ -210,25 +210,22 @@ Details: Architekturskizze im Repository.
 - /data/Wissensdatenbank_Payment/ – 60 Quelldokumente der Gletscherbank AG
 - /data/Wissensdatenbank_Payment/Schnittstellen/ – IF-01 bis IF-03 (WRICEF, camt.054, OpenAPI)
 - /data/Wissensdatenbank_Payment/Meetings/MP-05 – Projektsteuerung KI-Wissensassistent (Entscheide E1–E5)
-- /docs/project-charter.md – Ziele, Scope, Rollen
+- /docs/projektplan.md – Rollen, Zeitplan, Meilensteine, Ablauf der Präsentation
 - /docs/architektur.png – Architekturskizze
 - /tests/regression.json – Referenz- und Sicherheitsfragen der automatischen Regression; fachlicher Testkatalog (JJ)
 - /docs/testkonzept.md – Testebenen und Ergebnisse
 - /docs/erkenntnisse.md – Erkenntnisse für Präsentation und Reflexion
 - /docs/ki-einsatz.md – Deklaration KI-Einsatz (Claude Opus 5.5)
-- /docs/risiko-register.md – Risiken und Massnahmen
-- /docs/gantt.xlsx – Zeitplan bis Rollout
-- /docs/budget.xlsx – Budgetplan PoC / Pilot / Rollout (fiktiv)
+- /docs/risiko-radar.md – KI-Risiko-Radar: Risiken, Massnahmen, Status
+- /docs/mengengeruest.md – Mengengerüst und Business Case (fiktiv)
+- /docs/zielbild-betrieb.md – Zielbild Betrieb, Fahrplan bis Rollout
 - /app/ – Code der Web-App (Next.js, Vercel)
 
 ### 15. Notizen / offene Fragen
 
 Pitch-Rahmen: Projektteam der Gletscherbank präsentiert der Geschäftsleitung den PoC und beantragt den Pilot (Go/No-Go Rollout Ende März 2027, MP-05). Ausblick: Lösung als Produkt für weitere Banken (Option).
 
-Ablauf 15 Min. (je 5 Min. pro Person):
-- Deniz: Problem & Vision (1,5') + Live-Demo (3,5')
-- JJ: Use Cases, Wissensbasis & Schnittstellen (3') + Testergebnisse & Konfidenz-Ampel (2')
-- Peri: Risiken & Governance (3') + Roadmap, Budget & Antrag an GL (2')
+Ablauf ca. 19 Min. in sechs Teilen: Ausgangslage · Lösungsidee mit Live-Demo · Vom PoC zum Betrieb · Compliance und Risiko · Erste Erkenntnisse · Antrag an die GL. Danach Diskussion (ca. 10 Min.) und Reflexion (max. 5 Min.). Details im Projektplan.
 
 Meilensteine:
 - M1 So 8.11.: Repo, Project Charter, Testfragen-Katalog v1
@@ -239,4 +236,4 @@ Meilensteine:
 - M6 Do 3.12.: Generalprobe 2, Backup-Video, Repo eingefroren
 - Fr 4.12.: LNW 2
 
-JJ abwesend 15.–26.11. · Details: Projektplan (Doc) und Task-Liste bis 8.11.
+JJ abwesend 15.–26.11. · Details: docs/projektplan.md
