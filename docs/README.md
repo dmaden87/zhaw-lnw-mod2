@@ -9,6 +9,7 @@ PDF-Versionen aller Markdown-Unterlagen liegen in [`pdf/`](pdf/) (neu erzeugen m
 | [Testkonzept und Testautomatisierung](testkonzept.md) ([PDF](pdf/testkonzept.pdf)) – Testebenen, Ausführen, Referenzfragen, Ergebnisse | 02.11.2026 | Deniz, JJ |
 | [Feature-Übersicht (PDF, 1 Seite)](pdf/feature-uebersicht.pdf) – alle Funktionen der Web-App, Rollen, Technik | 02.11.2026 | Deniz |
 | [Zielbild Betrieb](zielbild-betrieb.md) ([PDF](pdf/zielbild-betrieb.pdf)) – vom PoC zur produktiven Lösung: SharePoint-Anbindung, Berechtigungen, Cloud-Wahl, Einbettung, Governance, Betriebsmodell | 20.11.2026 | Deniz, Peri, JJ |
+| [KI-Risiko-Radar](risiko-radar.md) – Erstbeurteilung nach KI-Risiko-Radar v4.7: Radar, Dreieck-Check, Rahmen-Check, Massnahmen | 20.11.2026 | Projektteam |
 | [Erkenntnisse](erkenntnisse.md) ([PDF](pdf/erkenntnisse.pdf)) – Produkt, KI-Technik, Sicherheit, Testen, Arbeiten mit KI; Grundlage für die Reflexion | 02.11.2026 | Team |
 | [Deklaration KI-Einsatz](ki-einsatz.md) ([PDF](pdf/ki-einsatz.pdf)) – Claude Opus 5.5: wer hat was gemacht | 02.11.2026 | Deniz |
 | [Projektjournal](journal.md) ([PDF](pdf/journal.pdf)) | laufend | Team |

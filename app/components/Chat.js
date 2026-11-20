@@ -1,6 +1,14 @@
 'use client';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+
+// Schutz gegen Datenabfluss (KI-Risiko-Radar D1/X1): Modell-Antworten zeigen keine Bilder
+// und keine anklickbaren Links. Sonst könnte ein manipuliertes Dokument das Modell dazu
+// bringen, Daten in eine externe Bild- oder Link-URL zu schreiben. Quellen-Links erzeugt die App selbst.
+const SAFE_MD = {
+  img: () => null,
+  a: ({ children }) => <span>{children}</span>,
+};
 import remarkGfm from 'remark-gfm';
 import { IconSearch, IconArrowRight, IconTrash } from '@tabler/icons-react';
 import { docHref } from '../lib/slug';
@@ -140,7 +148,7 @@ function Answer({ it, level, setLevel, onAsk, testMode, onRated }) {
         {r.status === 'fail' && <p className="err">{r.error}</p>}
         {a && (
           <>
-            <div className="prose"><ReactMarkdown remarkPlugins={[remarkGfm]}>{a.answer}</ReactMarkdown></div>
+            <div className="prose"><ReactMarkdown remarkPlugins={[remarkGfm]} components={SAFE_MD} skipHtml>{a.answer}</ReactMarkdown></div>
             {a.notices?.map((n) => <div key={n} className="info">{n}</div>)}
             {a.contradictions && <div className="warn"><strong>Widerspruch in den Quellen:</strong> {a.contradictions}</div>}
             {a.light !== 'green' && a.confidence_reason && <p className="reason">Einstufung: {a.confidence_reason}</p>}

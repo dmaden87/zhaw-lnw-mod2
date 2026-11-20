@@ -6,7 +6,7 @@ KI-Briefing-Bot für die fiktive **Gletscherbank AG**: Mitarbeitende erhalten in
 
 **Team:** Peri (Projektleiterin, Risk & Compliance) · JJ (Product Manager, Fachexperte Zahlungsverkehr) · Deniz (Tech Lead)
 **Präsentation:** 4. Dezember 2026
-**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Zielbild Betrieb](docs/zielbild-betrieb.md) · [Testkonzept](docs/testkonzept.md) · [Erkenntnisse](docs/erkenntnisse.md) · [Projektjournal](docs/journal.md)
+**Status:** Beta v0.5 live seit 02.11.2026 – [Lösungsdokumentation](docs/loesungsdokumentation.md) · [Zielbild Betrieb](docs/zielbild-betrieb.md) · [KI-Risiko-Radar](docs/risiko-radar.md) · [Testkonzept](docs/testkonzept.md) · [Erkenntnisse](docs/erkenntnisse.md) · [Projektjournal](docs/journal.md)
 
 [![Tests](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml/badge.svg)](https://github.com/dmaden87/zhaw-lnw-mod2/actions/workflows/tests.yml)
 

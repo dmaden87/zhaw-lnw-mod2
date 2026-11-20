@@ -135,6 +135,7 @@ Grundsatz: Was zuverlässig sein muss, prüft die App mit festen Regeln **ohne K
 | | **Zahlenprüfung:** Jede Zahl ab 2 Stellen muss in den gefundenen Abschnitten stehen (Tausendertrennzeichen und führende Nullen egal) | Vergleich der Ziffernfolgen | höchstens 70 % (Gelb), Hinweis mit den betroffenen Zahlen – Schutz gegen Halluzinationen |
 | | Code-Blöcke nur, wenn sie wörtlich aus einer Quelle stammen | Textvergleich | Code-Block wird entfernt |
 | | Nur tatsächlich gefundene Dokumente als Quelle; Darstellung ohne HTML/Skripte | bestehend | |
+| | **Keine Bilder und keine anklickbaren Links** aus der Modell-Antwort (seit 20.11.2026, Befund aus dem [KI-Risiko-Radar](risiko-radar.md), Massnahme D1/X1) | `app/components/Chat.js` | ein manipuliertes Dokument kann keine Daten über externe Bild- oder Link-URLs abfliessen lassen |
 | **5. Nachweis** | Zähler pro Tag und Kategorie, **ohne Fragetexte und ohne Personen** (Entscheid Team) | Tabelle `guard_counts`, Seite Einstellungen | Kennzahlen für Risiko-Register und DSFA |
 | | Red-Team-Tests: 37 Unit-Tests für Angriffe und erlaubte Fachfragen, 11 Sicherheitsfragen in der Live-Regression | siehe [testkonzept.md](testkonzept.md) | |
 

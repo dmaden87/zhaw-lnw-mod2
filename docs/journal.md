@@ -9,6 +9,8 @@ Erarbeitet mit Unterstützung von Claude (Anthropic), Modell Claude Opus 5.5 –
 | Wann | Was | Warum |
 | --- | --- | --- |
 | Vormittag | Zielbild Betrieb erarbeitet (`docs/zielbild-betrieb.md`): SharePoint als Quelle, Berechtigungen aus SharePoint im Suchindex (ein Index, Filter pro Frage statt Index pro Person), Azure Region Schweiz als Plattform, Sprachmodell austauschbar, Einbettung, Governance, Betriebsmodell, Fahrplan | Input Dozent: PoC ist Mittel zum Zweck; der reale Betrieb muss durchgespielt werden |
+| Mittag | KI-Risiko-Radar v4.7 aus dem Unterricht angewendet (`docs/risiko-radar.md`): GenAI, Autonomie 0, Daten, Schadenspotenzial und Angriffsfläche je 2; Rahmen-Check R1–R4, R6, Q1 | Risiko strukturiert beurteilen und Fachstellen bestimmen, bevor echte Daten kommen |
+| | Befund Dreieck-Check: Die Chat-Oberfläche zeigte Bilder und Links aus der Modell-Antwort an (möglicher Datenabfluss über manipulierte Dokumente). Behoben: Antworten ohne Bilder und anklickbare Links (`app/components/Chat.js`) | Massnahme D1/X1; dritte Seite des gefährlichen Dreiecks geschlossen |
 | | Recherche Stand Nov. 2026: In Azure Switzerland North aktuell keine GPT-Sprachmodelle mit reiner Schweizer Verarbeitung → Entscheid Datenresidenz (EU/EFTA oder CH) als offener Punkt für die GL | Ehrliche Grundlage statt Annahme |
 
 ## 02.11.2026 – Repository, Infrastruktur, Beta v0.5
