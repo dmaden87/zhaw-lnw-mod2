@@ -161,18 +161,24 @@ Unsere Empfehlung: **EU/EFTA genügt** für den Briefing-Bot. Er verarbeitet nur
 | Phase | Zeitraum | Inhalt |
 | --- | --- | --- |
 | **PoC** | Nov. 2026 | Web-App mit fiktiven Daten, Nutzen und Qualitätsmessung belegt (dieses Projekt) |
-| **Vorbereitung** | Dez. 2026 | DSFA (15.12.), Berechtigungs-Audit SharePoint als Gate 1 (18.12.), Entscheid Datenresidenz, Azure-Grundaufbau, Entra-App, Index für 3 Sites |
-| **Pilot** | ab 11.01.2027 (Fragen-Modus), ab 01.02.2027 (Begleitmodus) | 25 Personen aus PayOps und Kundenservice; Teams-Seitenleiste; Vergleich mit Microsoft 365 Copilot |
-| **Go/No-Go** | Ende März 2027 | KPI-Review (MP-05, E5): Korrektheit, Nutzung, Zeitersparnis, Sackgassen, Vorfälle |
+| **Vorbereitung** | Dez. 2026 | DSFA (15.12.), Berechtigungs-Audit SharePoint als Gate 1 (18.12.), Wissens-Owner der Pilot-Dokumente bestätigt, Entscheid Datenresidenz, Azure-Grundaufbau, Entra-App, Index für 3 Sites |
+| **Pilot** | ab 11.01.2027 (Fragen-Modus), ab 01.02.2027 (Begleitmodus) | 25 Personen aus PayOps und Kundenservice; Teams-Seitenleiste; Briefing-Bot und Copilot-Agent beantworten dieselben 30 Fachfragen, gemessen an denselben Muss-Anforderungen und KPIs |
+| **Go/No-Go** | Ende März 2027 | KPI-Review (MP-05, E5): Korrektheit, Nutzung, Zeitersparnis, Sackgassen, Vorfälle; Wahl der Variante (Briefing-Bot oder Copilot-Agent) |
 | **Rollout** | ab Q2 2027 | ca. 400 Mitarbeitende, weitere Quellen (Confluence), Windows-App |
 | **V1** | ab 2028 | persönliche Quellen nach separater DSFA; optional Produkt für weitere Banken |
 
 ## 10. Entscheide für die Geschäftsleitung
 
-1. **Datenresidenz des Sprachmodells:** EU/EFTA genügt (Empfehlung) oder zwingend Schweiz?
-2. **Bauen oder Kaufen:** Pilot als Vergleich mit Microsoft 365 Copilot freigeben?
-3. **Scope der Quellen im Pilot:** 3 SharePoint-Sites Zahlungsverkehr, Compliance und IT Payments; Kundendaten ausgeschlossen.
-4. **Protokollierung:** nur Zähler (heute) oder eine zweckgebundene, befristete Speicherung von Fragen für die Qualitätssicherung?
+Diese vier Entscheide beantragt das Projektteam in der Präsentation (Kapitel 6):
+
+1. **Pilot freigeben:** 25 Personen ab 11.01.2027, ≈ CHF 41'000 (Alternativen: verschieben, ablehnen).
+2. **Lösung:** Briefing-Bot und Microsoft 365 Copilot im Pilot an denselben Muss-Anforderungen messen, statt jetzt festzulegen (Alternativen: nur Copilot, nur Briefing-Bot).
+3. **Datenresidenz des Sprachmodells:** EU/EFTA genügt für interne Dokumente (Alternative: zwingend Schweiz).
+4. **Voraussetzungen:** DSFA, Berechtigungs-Audit und bestätigte Wissens-Owner vor dem Start (Gate 1) (Alternative: parallel zum Pilot).
+
+Weitere Punkte, die im Rahmen der Vorbereitung zu klären sind:
+- **Scope der Quellen im Pilot:** 3 SharePoint-Sites Zahlungsverkehr, Compliance und IT Payments; Kundendaten ausgeschlossen.
+- **Protokollierung:** nur Zähler (heute) oder eine zweckgebundene, befristete Speicherung von Fragen für die Qualitätssicherung?
 
 ## Quellen
 

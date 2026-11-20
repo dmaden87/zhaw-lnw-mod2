@@ -4,6 +4,16 @@
 
 Gesammelt während Konzept, Umsetzung und Tests. Jede Erkenntnis ist mit einem Beleg im Repository verknüpft.
 
+## Kernerkenntnisse (Präsentation, Kapitel 5)
+
+Drei Erkenntnisse aus PoC und Zielbild, die über den PoC hinaus zählen. Stand 20.11.2026.
+
+| Erkenntnis | Beleg | Konsequenz |
+| --- | --- | --- |
+| **Erst die Anforderungen, dann das Werkzeug.** Ampel und drei Detailstufen waren lösungsneutral als Muss definiert. Dadurch wurde Microsoft 365 Copilot, den die Bank schon einführt, zur echten Option. Weitere Quellen (Connectors, MCP) können beide anbinden; der Unterschied liegt in der Kontrolle über die Antwortqualität. | [zielbild-betrieb.md](zielbild-betrieb.md), Kapitel 5 | Bot und Copilot im Pilot an denselben Muss-Anforderungen und 30 Fachfragen messen; erst dann entscheiden Kosten und Aufwand. |
+| **Einer KI vertraut man nicht, man prüft sie laufend.** Das Modell schätzt sich allein oft auf 95–100 % ein. Die automatischen Tests fanden vier Fehler, die beim Ausprobieren niemand bemerkt hätte; das KI-Risiko-Radar fand eine Lücke für Datenabfluss (Bilder und Links in Antworten). | [testkonzept.md](testkonzept.md), [risiko-radar.md](risiko-radar.md) | Qualitätsmessung gehört in den Betrieb: Regression jeden Werktag, Freigabe bei jedem Modellwechsel, klare Rolle (KI-PM). |
+| **So gut wie die Dokumente, so vertraulich wie SharePoint.** Die Technik kostete im PoC CHF 16 und antwortet in rund 1,5 Sekunden. Qualität und Vertraulichkeit hängen an gepflegten Dokumenten und an den SharePoint-Rechten; der Bot macht zu offene Ablagen sofort sichtbar. | [zielbild-betrieb.md](zielbild-betrieb.md), Kapitel 4 und 8 | In Wissens-Owner und saubere Berechtigungen investieren (Gate 1), nicht in mehr Technik. |
+
 ## 1. Produkt und Nutzen
 
 | Erkenntnis | Beleg |
