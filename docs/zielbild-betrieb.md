@@ -160,7 +160,7 @@ Unsere Empfehlung: **EU/EFTA genügt** für den Briefing-Bot. Er verarbeitet nur
 
 | Phase | Zeitraum | Inhalt |
 | --- | --- | --- |
-| **PoC** | Nov. 2026 | Web-App mit fiktiven Daten, Nutzen und Qualitätsmessung belegt (dieses Projekt) |
+| **PoC** | Nov. 2026 | Web-App mit fiktiven Daten, Nutzen und Qualitätsmessung belegt (dieses Projekt); Fachtest: 97 % korrekt, 100 % richtige Quelle |
 | **Vorbereitung** | Dez. 2026 | DSFA (15.12.), Berechtigungs-Audit SharePoint als Gate 1 (18.12.), Wissens-Owner der Pilot-Dokumente bestätigt, Entscheid Datenresidenz, Azure-Grundaufbau, Entra-App, Index für 3 Sites |
 | **Pilot** | ab 11.01.2027 (Fragen-Modus), ab 01.02.2027 (Begleitmodus) | 25 Personen aus PayOps und Kundenservice; Teams-Seitenleiste; Briefing-Bot und Copilot-Agent beantworten dieselben 30 Fachfragen, gemessen an denselben Muss-Anforderungen und KPIs |
 | **Go/No-Go** | Ende März 2027 | KPI-Review (MP-05, E5): Korrektheit, Nutzung, Zeitersparnis, Sackgassen, Vorfälle; Wahl der Variante (Briefing-Bot oder Copilot-Agent) |
