@@ -10,7 +10,7 @@ Beurteilt wird der **Betrieb in der Bank** gemäss [zielbild-betrieb.md](zielbil
 | --- | --- |
 | **KI-System** | Briefing-Bot: verdichtete, belegte Antworten zu Prozessen und Themen im Zahlungsverkehr, in drei Detailstufen |
 | **Owner im Business** | COO (Business Owner gemäss Betriebsmodell) |
-| **Zweck und Nutzen** | Mitarbeitende können im Meeting sofort mitreden; die Nachrecherche sinkt von 1–2 Std. auf unter 15 Min. |
+| **Zweck und Nutzen** | Mitarbeitende sind schneller vorbereitet, im Meeting entscheidungsfähig und müssen kaum nachrecherchieren |
 | **Anbieter, Modell, Hosting** | PoC: Vercel, Neon (Frankfurt), Google Gemini. Betrieb: Azure Switzerland North, Azure AI Search, Sprachmodell über Gateway (Azure OpenAI, EU Data Zone) |
 | **Stopp-Check** | Nein. Der PoC arbeitet nur mit fiktiven Daten. Echte Daten erst nach Vertrag, DSFA und Berechtigungs-Audit (Gate 1). |
 
