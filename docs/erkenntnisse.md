@@ -1,6 +1,6 @@
 # Erkenntnisse aus dem Projekt
 
-**Stand:** 02.11.2026 · **Zweck:** Grundlage für Präsentation, Diskussion und Reflexion (LNW 2, max. 5 Min.) · **Verantwortlich:** Team
+**Stand:** 20.11.2026 · **Zweck:** Grundlage für Präsentation, Diskussion und Reflexion (LNW 2, max. 5 Min.) · **Verantwortlich:** Team
 
 Gesammelt während Konzept, Umsetzung und Tests. Jede Erkenntnis ist mit einem Beleg im Repository verknüpft.
 

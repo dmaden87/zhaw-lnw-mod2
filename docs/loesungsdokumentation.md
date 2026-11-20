@@ -1,6 +1,6 @@
 # Lösungsdokumentation Briefing-Bot (Beta v0.5)
 
-**Stand:** 02.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Review:** JJ (fachlich), Peri (Governance)
+**Stand:** 20.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Review:** JJ (fachlich), Peri (Governance)
 **Live:** https://zhaw-lnw-mod2.vercel.app (Zugang beim Team) · **KI-Einsatz:** erarbeitet mit Claude (Anthropic), Modell Claude Opus 5.5 – siehe [ki-einsatz.md](ki-einsatz.md)
 
 Der Briefing-Bot beantwortet Fragen zu Prozessen, Schnittstellen und Fachthemen der fiktiven Gletscherbank AG in drei Detailstufen (Instant, Basic, Full). Jede Antwort stützt sich ausschliesslich auf die interne Wissensbasis, nennt ihre Quellen und zeigt mit einer Konfidenz-Ampel, wie verlässlich sie ist.

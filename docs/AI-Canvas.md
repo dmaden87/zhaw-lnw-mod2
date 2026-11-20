@@ -2,7 +2,7 @@
 
 *Chat-basiertes Tool für komprimierte Informationen zu Prozessen und Themen*
 
-Team: JJ, Peri, Deniz · Version 0.3 · Stand 02.11.2026
+Team: JJ, Peri, Deniz · Version 0.4 · Stand 20.11.2026
 
 ## Warum? Problem & Nutzen
 

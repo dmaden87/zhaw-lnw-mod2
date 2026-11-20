@@ -1,6 +1,6 @@
 # Deklaration KI-Einsatz
 
-**Stand:** 02.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Gilt für:** Leistungsnachweis 2, CAS ZHAW Modul 2
+**Stand:** 20.11.2026 · **Verantwortlich:** Deniz (Tech Lead) · **Gilt für:** Leistungsnachweis 2, CAS ZHAW Modul 2
 
 Dies ist eine Schularbeit. Wir legen offen, wo und wie wir generative KI eingesetzt haben. Für alle Inhalte in diesem Repository ist das Team verantwortlich: Deniz, JJ und Peri.
 
@@ -31,7 +31,12 @@ Nicht zu verwechseln mit der **KI im Produkt**: Der Briefing-Bot selbst nutzt Go
 | Dokumentation | Review, Korrekturen | Lösungsdokumentation, Journal, Modellwahl, Testkonzept, PDFs |
 | Sicherheit | Anstoss und Entscheide: Schutz vor Manipulation, Urteilen und Prompt-Abfrage; Allgemeinwissen als Schalter; Protokoll nur als Zähler | Vorschlag der 5 Schichten, Umsetzung, Red-Team-Tests |
 | Testing | **fachliches Testing durch JJ** (Testkatalog, Bewertungen im Testing-Modus), Auswertung mit Peri | automatisierte Tests (Unit, API, Live-Regression) |
-| Präsentation und Reflexion | Inhalt, Auftritt, Reflexion zu Modul 2 | allenfalls Entwürfe, gekennzeichnet |
+| Zielbild Betrieb | Dozenten-Input aufgenommen, Entscheide (Plattform, Empfehlung Datenresidenz, Variantenvergleich mit Copilot) | Recherche mit Quellen, Ausarbeitung, Architekturdiagramm |
+| Risiko | Methode aus dem Unterricht (KI-Risiko-Radar v4.7), Einschätzung und Freigabe | Erstbeurteilung, Massnahmen-Zuordnung; Behebung der gefundenen Lücke (Bilder und Links in Antworten) |
+| Mengengerüst und Business Case | drei Probleme rund um Meetings, Annahmen, Freigabe | Hochrechnung, Business Case, Konsistenz über alle Unterlagen |
+| Erkenntnisse | Auswahl der drei Kernerkenntnisse im Interview | Vorschläge, Formulierung, Abgleich mit Präsentation und Repository |
+| Präsentation | Struktur, Storyline, Feedback-Runden, Freigabe, Auftritt | Folien im Gletscherbank-Design, Illustrationen, Entwürfe der Sprechernotizen, Konsistenzprüfung |
+| Reflexion | Reflexion zu Modul 2, persönliche Takeaways | – |
 
 ## 3. Wie wir mit KI-Ergebnissen umgegangen sind
 
