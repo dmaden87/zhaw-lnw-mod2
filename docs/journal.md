@@ -4,6 +4,13 @@ Chronologie der wichtigsten Arbeiten und Entscheide. Neueste Einträge oben.
 
 Erarbeitet mit Unterstützung von Claude (Anthropic), Modell Claude Opus 5.5 – siehe [Deklaration KI-Einsatz](ki-einsatz.md).
 
+## 20.11.2026
+
+| Wann | Was | Warum |
+| --- | --- | --- |
+| Vormittag | Zielbild Betrieb erarbeitet (`docs/zielbild-betrieb.md`): SharePoint als Quelle, Berechtigungen aus SharePoint im Suchindex (ein Index, Filter pro Frage statt Index pro Person), Azure Region Schweiz als Plattform, Sprachmodell austauschbar, Einbettung, Governance, Betriebsmodell, Fahrplan | Input Dozent: PoC ist Mittel zum Zweck; der reale Betrieb muss durchgespielt werden |
+| | Recherche Stand Nov. 2026: In Azure Switzerland North aktuell keine GPT-Sprachmodelle mit reiner Schweizer Verarbeitung → Entscheid Datenresidenz (EU/EFTA oder CH) als offener Punkt für die GL | Ehrliche Grundlage statt Annahme |
+
 ## 02.11.2026 – Repository, Infrastruktur, Beta v0.5
 
 | Zeit | Ergebnis | Entscheid / Begründung |

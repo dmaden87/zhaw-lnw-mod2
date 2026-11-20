@@ -12,7 +12,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 OUT = DOCS / "pdf"
-FILES = ["loesungsdokumentation.md", "testkonzept.md", "ki-einsatz.md", "erkenntnisse.md", "journal.md", "modellwahl.md"]
+FILES = ["loesungsdokumentation.md", "testkonzept.md", "ki-einsatz.md", "erkenntnisse.md", "zielbild-betrieb.md", "journal.md", "modellwahl.md"]
 
 CSS = """
 @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
@@ -26,7 +26,7 @@ th { background: #f1f3f7; }
 tr { break-inside: avoid; }
 code { font-family: Consolas, monospace; font-size: 8.5pt; background: #f4f5f7; padding: 0 2pt; }
 pre { background: #f4f5f7; padding: 6pt; font-size: 8pt; white-space: pre-wrap; }
-img { max-width: 100%; }
+img { max-width: 100%; max-height: 150mm; display: block; margin: 0 auto; }
 a { color: #2f5bea; text-decoration: none; }
 hr { border: 0; border-top: 1px solid #dfe3ea; }
 """
@@ -37,6 +37,7 @@ def html_for(md_path: Path) -> str:
     md = re.sub(r"```mermaid\n.*?```", "![Architektur](../architektur.png)", md, flags=re.S)
     body = subprocess.run(["pandoc", "-f", "gfm", "-t", "html5"], input=md, capture_output=True, text=True, check=True).stdout
     body = body.replace('src="../architektur.png"', f'src="file://{DOCS / "architektur.png"}"')
+    body = re.sub(r'src="([\w-]+\.png)"', lambda m: f'src="file://{DOCS / m.group(1)}"', body)
     return f"<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><style>{CSS}</style></head><body>{body}</body></html>"
 
 
