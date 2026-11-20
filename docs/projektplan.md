@@ -62,7 +62,7 @@ JJ liefert Wissensbasis und Soll-Antworten vor den Ferien (M2, 14.11.); während
 
 Der Testfragen-Katalog bis 30.11. ist auch in MP-05 als Pendenz festgehalten; M4 deckt ihn ab.
 
-**Stand 20.11.2026:** M1 bis M3 erreicht. Der PoC läuft (Beta v0.5 mit Schutzmechanismen und Testautomatisierung); Risiken stehen im KI-Risiko-Radar, Zeitplan und Budget im AI-Canvas (Feld 12), im Mengengerüst und im Zielbild Betrieb (Kapitel 9). Die Folien liegen als Entwurf vor. Offen für M4: fachliche Testauswertung (JJ) und die studentischen Learnings.
+**Stand 20.11.2026:** M1 bis M3 erreicht. Der PoC läuft (Beta v0.5 mit Schutzmechanismen und Testautomatisierung); Risiken stehen im KI-Risiko-Radar, Zeitplan und Budget im AI-Canvas (Feld 12), im Mengengerüst und im Zielbild Betrieb (Kapitel 9). Die Folien liegen als Entwurf vor. Der Fachtest ist ausgewertet: 97 % der Antworten korrekt, 100 % richtige Quelle (testkonzept.md, Kapitel 6). Offen für M4: Ampel-Kalibrierung, studentische Learnings und Reflexion.
 
 ## Geplanter Aufwand pro Person
 

@@ -113,6 +113,7 @@ Qualität Prototyp (Testset):
 - Sackgassen-Quote: 0 % Antworten ohne Weiterweg (Alternative oder Ansprechperson)
 - Antwortzeit INSTANT < 5 Sek. (Einsatz live im Meeting)
 - Einhaltung Lesezeit je Stufe (Länge INSTANT / BASIC / FULL)
+- Ergebnis Fachtest 20.11.2026: 97 % korrekt, 100 % richtige Quelle; Abweichungen lagen in den Dokumenten ([testkonzept.md](testkonzept.md), Kapitel 6)
 
 Mengengerüst (fiktiv, Details in [mengengeruest.md](mengengeruest.md)): pro Meeting mit Wissenslücke 3,5 Personenstunden (Vorbereitung 1,0 · im Meeting 1,0 · Nachrecherche 1,5); 6'000 solche Meetings pro Jahr → 21'000 Std. ≈ 2'625 Personentage
 

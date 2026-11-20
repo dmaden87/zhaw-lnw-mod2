@@ -187,6 +187,12 @@ Grundsatz: Was zuverlässig sein muss, prüft die App mit festen Regeln **ohne K
 - **Live-Regression mit 12 Referenzfragen:** Im ersten Lauf bestanden 9 von 12. Behoben wurden zwei Fehler: Rot ohne Weiterweg und eine zu kurze Basic-Antwort. Danach bestanden 11 von 12, ein Befund ist bekannt (R04).
 - Details, Ausführung und Erweiterung durch JJ: [testkonzept.md](testkonzept.md)
 
+### Fachliches Testing (20.11.2026)
+
+- **97 % der Antworten fachlich korrekt, 100 % mit der richtigen Quelle** (Ziele ≥ 80 % und ≥ 90 %). Bewertet von JJ im Testing-Modus.
+- Die Abweichungen lagen in den Dokumenten, nicht im Modell. Neue Informationen und Dokumente hat das Team ergänzt und nachgeprüft; der Bot hat sie korrekt verwendet.
+- Details: [testkonzept.md](testkonzept.md), Kapitel 6
+
 ## 9. Bekannte Schwächen und nächste Schritte
 
 Die gesammelten Erkenntnisse aus Konzept, Umsetzung und Tests stehen in [erkenntnisse.md](erkenntnisse.md).
@@ -204,5 +210,6 @@ Die gesammelten Erkenntnisse aus Konzept, Umsetzung und Tests stehen in [erkennt
 | Basic-Antwort vermischte zwei Timeout-Arten | Testfall aufnehmen, Prompt-Regel «Begriffe nicht vermischen» | JJ, Deniz / M3 |
 | Fehlermeldungen (Upload, Ersetzen, Antwort) | Umgesetzt 02.11.: verständliche Meldungen mit nächstem Schritt, z. B. Dateityp, Grösse, gescanntes PDF, ausgelasteter KI-Dienst, abgelaufene Anmeldung; technische Details nur im Log | – |
 | XML-Beispiel in IF-02 wird in der Aufbereitung zerlegt | Code-Blöcke in `build_chunks.py` erhalten | Deniz / M3 |
-| Ampel-Schwellen sind Startwerte | Kalibrierung mit Testset (30 Fragen) | Peri, JJ / M4 29.11. |
+| Ampel-Schwellen sind Startwerte | Kalibrierung mit den Bewertungen aus dem Fachtest | Peri, JJ / M4 29.11. |
+| Fachtest: Abweichungen stammen aus fehlerhaften Dokumenten | Quelle durch den Wissens-Owner korrigieren; betroffene Fragen in die Live-Regression | JJ / M4 29.11. |
 | 15 Dokumente ohne Owner im Kopf (Leitfäden, Transkripte, 2 Produktblätter) | Owner ergänzen vor Freeze | JJ / M2 14.11. |

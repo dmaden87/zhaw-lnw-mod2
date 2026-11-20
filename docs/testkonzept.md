@@ -1,6 +1,6 @@
 # Testkonzept und Testautomatisierung
 
-**Stand:** 02.11.2026 · **Verantwortlich:** Deniz (technisch), JJ (fachlich), Peri (Auswertung)
+**Stand:** 20.11.2026 · **Verantwortlich:** Deniz (technisch), JJ (fachlich), Peri (Auswertung)
 
 ## 1. Übersicht
 
@@ -11,7 +11,7 @@
 | **3. Build** | App lässt sich fehlerfrei bauen | `next build` | bei jedem Push |
 | **4. Live-Smoke** | Produktion erreichbar, ohne Anmeldung gesperrt, Admin-API nur mit Token, falsches Passwort abgewiesen, Datenbank gefüllt | `app/tests/live/run.mjs` | nach jedem Push (nach dem Deployment) und werktags um 06:17 Uhr |
 | **5. Live-Regression** | Referenzfragen gegen die echte App: richtige Quelle, erlaubte Ampelfarbe, Pflichtbegriffe, Länge je Stufe, nie eine Sackgasse; **Red-Team**: Manipulation, Systemprompt, Code, Urteile, Personendaten, themenfremde Fragen | `tests/regression.json` + `run.mjs` | wie Smoke |
-| **6. Fachliches Testing** | Korrektheit, Vollständigkeit, Halluzinationen und Kalibrierung der Ampel anhand des Testkatalogs | JJ im Testing-Modus der App, Export als CSV | bis M4 (29.11.) |
+| **6. Fachliches Testing** | Korrektheit, Vollständigkeit, Halluzinationen und Kalibrierung der Ampel anhand des Testkatalogs | JJ im Testing-Modus der App, Export als CSV | durchgeführt 20.11.: 97 % korrekt, 100 % richtige Quelle (Kapitel 6) |
 
 Die Ebenen 1 bis 5 laufen automatisch, Ebene 6 ist manuell und fachlich. Befunde aus Ebene 6 werden als Referenzfragen in Ebene 5 übernommen. So bleibt ein einmal behobener Fehler behoben.
 
@@ -103,7 +103,28 @@ Faustregel: Eine Frage wird hier aufgenommen, wenn sie für die Präsentation wi
 - **Hinweis zur Bedienung:** «Re-run» in GitHub wiederholt einen Lauf mit dem *damaligen* Stand des Codes. Einen Lauf mit dem aktuellen Stand startet «Run workflow».
 - Gerade dieser Lauf zeigt den Nutzen der Automatik: Der Umlaut-Fehler war in den 134 Unit-Tests nicht aufgefallen, weil dort kein Angriff mit Umlaut am Wortanfang vorkam.
 
-## 6. Grenzen
+## 6. Fachliches Testing (Ebene 6), 20.11.2026
+
+JJ hat den fachlichen Testkatalog im Testing-Modus der App beantworten lassen und jede Antwort fachlich bewertet.
+
+| Kennzahl | Ziel (AI-Canvas, Feld 7) | Ergebnis |
+| --- | --- | --- |
+| Antworten fachlich korrekt | ≥ 80 % | **97 %** ✔ |
+| Richtige Quelle angegeben | ≥ 90 % | **100 %** ✔ |
+
+**Befunde:**
+
+- **Die Abweichungen lagen in den Dokumenten, nicht im Modell.** Wo eine Antwort fachlich nicht stimmte, stand der Fehler bereits in der Quelle. Der Bot hat die Quelle korrekt wiedergegeben und richtig zitiert. Die Qualität der Antworten hängt damit direkt an der Qualität der Dokumente (Kernerkenntnis 3 in [erkenntnisse.md](erkenntnisse.md)).
+- **Wissenspflege funktioniert.** Das Team hat neue Informationen und Dokumente in die Wissensbasis aufgenommen und die Antworten danach erneut geprüft. Der Bot hat die neuen Inhalte korrekt verwendet.
+
+**Konsequenzen:**
+
+- Fehler in Dokumenten korrigiert der zuständige Wissens-Owner (im Zielbild: Rolle Wissens-Owner, [zielbild-betrieb.md](zielbild-betrieb.md)). Die betroffenen Fragen kommen als Referenzfragen in die Live-Regression (Ebene 5).
+- Die Ampel-Schwellen werden mit den Bewertungen aus dem Fachtest kalibriert (offen, Peri und JJ, M4 29.11.).
+
+**Beleg:** Bewertungen im Testing-Modus der App, Export als CSV (JJ).
+
+## 7. Grenzen
 
 - Die Live-Tests prüfen Form und Quellen, aber nicht die fachliche Richtigkeit jedes Satzes. Das leistet das fachliche Testing (Ebene 6).
 - Antworten eines Sprachmodells schwanken leicht. Die Regression lässt deshalb Bandbreiten zu, zum Beispiel Grün oder Gelb, und mehrere mögliche Quellen.

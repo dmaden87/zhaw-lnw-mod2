@@ -45,7 +45,7 @@ SUMMARY = {
     7: ["Vorbereitung 30 → < 5 Min. · Nachrecherche 1–2 Std. → < 15 Min.",
         "Vertagte Entscheide 1 von 5 → < 1 von 10",
         "Nutzung in ≥ 3 von 5 Meetings",
-        "Korrektheit ≥ 80 %, Quellen ≥ 90 %, Halluzination < 5 %",
+        "Korrektheit ≥ 80 %, Quellen ≥ 90 % (Fachtest: 97 % / 100 %)",
         "0 % Sackgassen · Instant < 5 Sek."],
     8: ["MVP: Unternehmenswissen inkl. Protokolle, Transkripte",
         "V1: persönliche Mails, Teams, OneDrive",

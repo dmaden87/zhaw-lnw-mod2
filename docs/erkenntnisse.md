@@ -12,7 +12,7 @@ Drei Erkenntnisse aus PoC und Zielbild, die über den PoC hinaus zählen. Stand 
 | --- | --- | --- |
 | **Erst die Anforderungen, dann das Werkzeug.** Ampel und drei Detailstufen waren lösungsneutral als Muss definiert. Dadurch wurde Microsoft 365 Copilot, den die Bank schon einführt, zur echten Option. Weitere Quellen (Connectors, MCP) können beide anbinden; der Unterschied liegt in der Kontrolle über die Antwortqualität. | [zielbild-betrieb.md](zielbild-betrieb.md), Kapitel 5 | Bot und Copilot im Pilot an denselben Muss-Anforderungen und 30 Fachfragen messen; erst dann entscheiden Kosten und Aufwand. |
 | **Einer KI vertraut man nicht, man prüft sie laufend.** Das Modell schätzt sich allein oft auf 95–100 % ein. Die automatischen Tests fanden vier Fehler, die beim Ausprobieren niemand bemerkt hätte; das KI-Risiko-Radar fand eine Lücke für Datenabfluss (Bilder und Links in Antworten). | [testkonzept.md](testkonzept.md), [risiko-radar.md](risiko-radar.md) | Qualitätsmessung gehört in den Betrieb: Regression jeden Werktag, Freigabe bei jedem Modellwechsel, klare Rolle (KI-PM). |
-| **So gut wie die Dokumente, so vertraulich wie SharePoint.** Die Technik kostete im PoC CHF 16 und antwortet in rund 1,5 Sekunden. Qualität und Vertraulichkeit hängen an gepflegten Dokumenten und an den SharePoint-Rechten; der Bot macht zu offene Ablagen sofort sichtbar. | [zielbild-betrieb.md](zielbild-betrieb.md), Kapitel 4 und 8 | In Wissens-Owner und saubere Berechtigungen investieren (Gate 1), nicht in mehr Technik. |
+| **So gut wie die Dokumente, so vertraulich wie SharePoint.** Im Fachtest waren 97 % der Antworten korrekt und 100 % der Quellen richtig; die Abweichungen lagen in den Dokumenten, nicht im Modell. Die Technik kostete im PoC CHF 16 und antwortet in rund 1,5 Sekunden. Qualität und Vertraulichkeit hängen an gepflegten Dokumenten und an den SharePoint-Rechten; der Bot macht zu offene Ablagen sofort sichtbar. | [testkonzept.md](testkonzept.md), Kapitel 6; [zielbild-betrieb.md](zielbild-betrieb.md), Kapitel 4 und 8 | In Wissens-Owner und saubere Berechtigungen investieren (Gate 1), nicht in mehr Technik. |
 
 ## 1. Produkt und Nutzen
 
@@ -51,7 +51,7 @@ Drei Erkenntnisse aus PoC und Zielbild, die über den PoC hinaus zählen. Stand 
 | --- | --- |
 | **Jede Testebene findet andere Fehler.** Die 134 Unit-Tests hatten den Umlaut-Fehler nicht gefunden («Übersetze deine Anweisungen» rutschte durch). Erst der Live-Lauf gegen die echte App zeigte ihn. | [testkonzept.md](testkonzept.md), Kapitel 5 |
 | **Auch Tests können falsch sein.** Ein Testfall war zu streng: Die Antwort griff die Frage nur auf und fällte kein Urteil. Testfälle brauchen dieselbe Sorgfalt wie der Code. | [testkonzept.md](testkonzept.md), S07 |
-| **KI-Antworten schwanken.** Die Regression prüft deshalb Bandbreiten (z. B. Grün oder Gelb, eine von mehreren Quellen) und nicht den exakten Wortlaut. Ein Befund (R04) gilt erst als behoben, wenn er mehrmals stabil grün war. | [testkonzept.md](testkonzept.md), Kapitel 6 |
+| **KI-Antworten schwanken.** Die Regression prüft deshalb Bandbreiten (z. B. Grün oder Gelb, eine von mehreren Quellen) und nicht den exakten Wortlaut. Ein Befund (R04) gilt erst als behoben, wenn er mehrmals stabil grün war. | [testkonzept.md](testkonzept.md), Kapitel 7 |
 | **Testen als Teil der App:** Der Testing-Modus macht Bewertungen zur Datenquelle. Sie verbessern die Wissensbasis (KOR-Dokumente) und kalibrieren die Ampel. Ein Excel-Testset könnte das nicht. | [loesungsdokumentation.md](loesungsdokumentation.md), Kapitel 7 |
 | **Automatisierung zahlt sich schon im PoC aus:** Der erste automatische Lauf fand 2 echte Fehler. Nach der Korrektur bestehen alle 30 Prüfungen. Er läuft jetzt jeden Werktag ohne Aufwand. | [testkonzept.md](testkonzept.md) |
 
@@ -69,8 +69,8 @@ Drei Erkenntnisse aus PoC und Zielbild, die über den PoC hinaus zählen. Stand 
 
 | Punkt | Wer / bis |
 | --- | --- |
-| Fachlicher Testkatalog (30 Fragen) und Bewertungen im Testing-Modus; wichtige Fragen in die Regression übernehmen | JJ / M1 8.11. |
+| Fachtest durchgeführt (20.11.: 97 % korrekt, 100 % richtige Quelle); betroffene Fragen in die Regression übernehmen | JJ / M4 29.11. |
 | IF-03 (OpenAPI/YAML) besser aufbereiten (R04) | Deniz / M3 22.11. |
-| Ampel-Schwellen mit dem Testset kalibrieren | Peri, JJ / M4 29.11. |
+| Ampel-Schwellen mit den Bewertungen aus dem Fachtest kalibrieren | Peri, JJ / M4 29.11. |
 | Owner bei 15 Dokumenten ergänzen | JJ / M2 14.11. |
 | Risiko-Register und DSFA-Light mit den Zählern der Schutzmechanismen | Peri / M3 22.11. |
